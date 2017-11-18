@@ -25,6 +25,14 @@ public class TestChoices {
 			   "the percentage of correct answers are printed");
     }
 
+    //This method populates the test with random answer choices
+    public static int[] populateTest(int[] test) {
+	for (int i = 0; i < test.length; i++) {
+	    test[i] = (int) (Math.random() * 4);
+	}
+	return test;
+    }
+
     public static void main(String[] args) {
 
 	about();
@@ -88,16 +96,6 @@ public class TestChoices {
 
 	System.out.println("See code for conclusions drawn " +
 			   "and other information\n");
-	
-	
-    }
-
-    //This method populates the test with random answer choices
-    public static int[] populateTest(int[] test) {
-	for (int i = 0; i < test.length; i++) {
-	    test[i] = (int) (Math.random() * 4);
-	}
-	return test;
     }
 
 }//End class
