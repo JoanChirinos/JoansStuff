@@ -11,7 +11,32 @@
 import java.util.ArrayList;
 
 public class MySortsPlus {
- 
+
+    /*************
+     * Utilities *
+     *************/
+
+    //Pre-cond: data.size() >= 1
+    public static int max(ArrayList<Integer> data) {
+
+        int max = data.get(0);
+	for (int i = 1; i < data.size(); i++)
+	    if (max < data.get(i)) max = data.get(i);
+	return max;
+
+    }
+
+    //Pre-cond: data.size() >= 1
+    public static int min(ArrayList<Integer> data) {
+
+        int max = data.get(0);
+	for (int i = 1; i < data.size(); i++)
+	    if (max > data.get(i)) max = data.get(i);
+	System.out.println(max);
+	return max;
+
+    }
+    
     /**********
      * Best Case for bubbleSort: An AL in ascending order
      *    Why? Because the way we have it written, it has a constant number
@@ -185,12 +210,44 @@ public class MySortsPlus {
 
     }//end cocktailSort
 
+    //pre-cond: elements in data are in the range [0, infinity)
+    public static void countingSort(ArrayList<Integer> data) {
+
+	System.out.println("\n***CountingSort***\n" +
+			   "Initial: " + data);
+
+	int[] arr = new int[max(data) + 1];
+	for (int i = 0; i < data.size(); i++) {
+	    arr[data.get(i)]++;
+	}
+
+	//Might want to comment this out if AL really large
+	String arrStr = "[";
+	for (int i : arr)
+	    arrStr += i + ",";
+	System.out.println("Counting array: " +
+			   arrStr.substring(0, arrStr.length() - 1) + "]");
+	
+	data = new ArrayList<Integer>();
+	
+	for (int i = 0; i < arr.length; i++) {
+	    while (arr[i] > 0) {
+		data.add(i);
+		arr[i]--;
+		System.out.println(data);		
+	    }
+	}
+
+	System.out.println("\nSorted: " + data + "\n");
+
+    }//end countingSort
+
 
     public static void main(String[] args) {
 
 	ArrayList<Comparable> random = new ArrayList<Comparable>();
 	for (int i = 0; i < 10; i++)
-	    random.add( (int)(Math.random() * 100) );
+	    random.add( (int)(Math.random() * 100));
 
 	ArrayList<Comparable> bubble = new ArrayList<Comparable>();
 	for (int i = 0; i < 10; i++)
@@ -208,10 +265,15 @@ public class MySortsPlus {
 	for (int i = 0; i < 10; i++)
 	    cocktail.add(random.get(i));
 
+	ArrayList<Integer> counting = new ArrayList<Integer>();
+	for (int i = 0; i < 10; i++)
+	    counting.add((Integer)(random.get(i)));
+
 	bubbleSort(bubble);
 	selectionSort(select);
 	insertionSort(insert);
 	cocktailSort(cocktail);
+	countingSort(counting);
 	
     }
 
