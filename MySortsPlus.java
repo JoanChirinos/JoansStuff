@@ -26,16 +26,14 @@ public class MySortsPlus {
 
     }
 
-    //Pre-cond: data.size() >= 1
-    public static int min(ArrayList<Integer> data) {
+    public static boolean isSorted(ArrayList<Comparable> data) {
 
-        int max = data.get(0);
-	for (int i = 1; i < data.size(); i++)
-	    if (max > data.get(i)) max = data.get(i);
-	System.out.println(max);
-	return max;
-
+	for (int i = 0; i < data.size() - 1; i++)
+	    if (data.get(i).compareTo(data.get(i + 1)) > 0) return false;
+	return true;
+	
     }
+
     
     /**********
      * Best Case for bubbleSort: An AL in ascending order
@@ -242,6 +240,34 @@ public class MySortsPlus {
 
     }//end countingSort
 
+    public static void hopeSort(ArrayList<Comparable> data) {
+
+	System.out.println("\n***HopeSort***\n" +
+			   "Initial: " + data + "\n");
+
+	int attemptCount = 0;
+	
+	while (true) {
+
+	    //Commented out for safety lol
+	    //System.out.println(data);
+
+	    if (isSorted(data)) break;
+	    int i = (int)(Math.random() * data.size());
+	    int j = (int)(Math.random() * data.size());
+
+	    data.set(i, data.set(j, data.get(i)));
+
+	    attemptCount++;
+	    
+	}
+
+	System.out.println("\nSorted: " + data + "\n" +
+			   "How many tries did it take? " +
+			   attemptCount + "\n");
+
+    }
+
 
     public static void main(String[] args) {
 
@@ -269,11 +295,16 @@ public class MySortsPlus {
 	for (int i = 0; i < 10; i++)
 	    counting.add((Integer)(random.get(i)));
 
+	ArrayList<Comparable> hope = new ArrayList<Comparable>();
+	for (Comparable i : random)
+	    hope.add(i);
+
 	bubbleSort(bubble);
 	selectionSort(select);
 	insertionSort(insert);
 	cocktailSort(cocktail);
 	countingSort(counting);
+	hopeSort(hope);
 	
     }
 
