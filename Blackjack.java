@@ -15,7 +15,20 @@ public class Blackjack {
 
     public ArrayList<Integer> deck;
     public ArrayList<Integer> playerHand = new ArrayList<Integer>();
-    public ArrayList<Integer> computerHand = new ArrayList<Integer>();    
+    public ArrayList<Integer> computerHand = new ArrayList<Integer>();
+    public int playerCash;
+    public int computerCash;
+    public int totalBet = 0;
+
+    public Blackjack() {
+	playerCash = 100;
+	computerCash = 100;
+    }
+
+    public Blackjack(int pc, int cc) {
+	playerCash = pc;
+	computerCash = cc;
+    }
 
     public boolean playerTurn() {
 
@@ -25,11 +38,10 @@ public class Blackjack {
 	    deck.remove(indexToAdd);
 	}
 
-	System.out.println("Hand: " + playerHand);
-	System.out.println("Sum: " + handSum(playerHand));
-
 	outside:
 	while (true) {
+
+	    System.out.println("You have " + playerCash + " dollars");
 
 	    if (handSum(playerHand) > 21) {
 		System.out.println("Bust!");
@@ -41,6 +53,31 @@ public class Blackjack {
 		return true;
 	    }
 
+	    System.out.println("Hand: " + playerHand);
+	    System.out.println("Sum: " + handSum(playerHand));
+
+	    int pbet = 1;
+	    top:
+	    while (true) {
+		boolean toBreak = true;
+		System.out.print("How much do you want to bet?\n" +
+				   "(You will bet at least 1 dollar)\nBet: ");
+		try {
+		    pbet = Integer.parseInt(Keyboard.readString());
+		}
+		catch (Exception e) { toBreak = false; }
+		if (toBreak) break;
+	    }
+	    if (pbet == 0) pbet = 1;
+	    if (pbet <= playerCash) {
+		playerCash -= pbet;
+		totalBet += playerCash;
+	    }
+	    else {
+		totalBet += playerCash;
+		playerCash = 0;
+	    }
+
 	    //hit or hold
 	    while (true) {
 		System.out.print("hit or hold(hit, hold): ");
@@ -50,16 +87,17 @@ public class Blackjack {
 	    }
 
 	    //draw card from deck
+	    System.out.println();
 	    int indexToAdd = (int)(Math.random() * deck.size());
 	    playerHand.add(deck.get(indexToAdd));
 	    deck.remove(indexToAdd);
+	}
 
 	    System.out.println("\nHand: " + playerHand);
 	    System.out.println("Sum: " + handSum(playerHand));
 	    
-	}
 
-	return true;
+	    return true;
 	    
     }
 
@@ -80,7 +118,13 @@ public class Blackjack {
 		System.out.println("Computer: Dang it...");
 		return false;
 	    }
-		else if (handSum(computerHand) > handSum(playerHand)) break;
+	    else if (handSum(computerHand) > handSum(playerHand)) break;
+
+	    if (computerCash > playerCash && computerCash >= 10) {
+		int compbet = (int)(Math.random() * 11);
+		computerBet(compbet);
+		System.out.println("The computer bet " + compbet + " dollars");
+	    }
 
 	    int indexToAdd = (int)(Math.random() * deck.size());
 	    computerHand.add(deck.get(indexToAdd));
@@ -95,8 +139,18 @@ public class Blackjack {
 	
     }
 
+    public void playerBet(int bet) {
+	playerCash -= bet;
+	totalBet += bet;
+    }
+
+    public void computerBet(int bet) {
+	computerCash -= bet;
+	totalBet += bet;
+    }
+
     public void popDeck() {
-        deck = new ArrayList<Integer>();
+	deck = new ArrayList<Integer>();
 	for (int i = 1; i < 14; i++) {
 	    deck.add(i);
 	    deck.add(i);
@@ -120,7 +174,7 @@ public class Blackjack {
 	}
     }
 
-    public void playGame() {
+    public boolean playGame() {
 
 	popDeck();
 	shuffle();
@@ -144,17 +198,30 @@ public class Blackjack {
 	    System.out.println("Computer wins!");
 	}
 
+	if (computerCash <= 0) {
+	    System.out.println("You won! The computer has no money left!");
+	    return true;
+	}
+	else if (playerCash <= 0) {
+	    System.out.println("You lost! You have no money left!");
+	    return true;
+	}
+
+	return false;
+
     }
 
     public static void main(String[] args) {
 	Blackjack game;
+	game = new Blackjack();
+	game.playGame();
 	while (true) {
-	    game = new Blackjack();
-	    game.playGame();
 	    System.out.print("\n\nPlay again? (y/n): ");
 	    String choice = Keyboard.readString();
 	    if ( !(choice.equals("y")) && !(choice.equals("Y")) ) break;
 	    else System.out.println("\n\n");
+	    game = new Blackjack(game.playerCash, game.computerCash);
+	    if (game.playGame()) break;
 	}
     }
 
