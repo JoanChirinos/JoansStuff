@@ -23,4 +23,10 @@ to shift letters. However, the key shifts letters in such a way that
 encrypting "llll" generally will not result in a String of 4 of the same
 character (like "aaaa"; it will return something like "suhn")
 
+# Utilities
+### these are stored in jutils/
+
+## Keyboard
+A class to facilitate reading user input
+
 ~Joan Chirinos
