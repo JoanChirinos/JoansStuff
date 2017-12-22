@@ -17,4 +17,10 @@ it takes to generate these numbers
 A version of MySorts that I did in APCS class, but including a couple other
 interesting sorts.
 
+## JoanCipher
+A encryption/decryption program that utilizes a caesar-cipher-like mechanism
+to shift letters. However, the key shifts letters in such a way that
+encrypting "llll" generally will not result in a String of 4 of the same
+character (like "aaaa"; it will return something like "suhn")
+
 ~Joan Chirinos
