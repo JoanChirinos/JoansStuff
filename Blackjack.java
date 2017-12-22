@@ -68,7 +68,7 @@ public class Blackjack {
 		catch (Exception e) { toBreak = false; }
 		if (toBreak) break;
 	    }
-	    if (pbet == 0) pbet = 1;
+	    if (pbet <= 0) pbet = 1;
 	    if (pbet <= playerCash) {
 		playerCash -= pbet;
 		totalBet += playerCash;
