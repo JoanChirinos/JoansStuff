@@ -23,6 +23,10 @@ to shift letters. However, the key shifts letters in such a way that
 encrypting "llll" generally will not result in a String of 4 of the same
 character (like "aaaa"; it will return something like "suhn")
 
+## Blackjack
+The simple, yet fun game of Blackjack! Player vs. Computer. Multiplayer
+(hopefully) coming soon!
+
 # Utilities
 ##### these are stored in jutils/
 
