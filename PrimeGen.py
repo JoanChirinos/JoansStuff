@@ -86,8 +86,7 @@ def primeGenGraph(maximum = 50000, countBy = 1000):
     plt.plot(x, y)
     plt.show()
         
-
-
+primeGenPrint(300)
 
 
 
