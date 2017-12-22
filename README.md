@@ -24,7 +24,7 @@ encrypting "llll" generally will not result in a String of 4 of the same
 character (like "aaaa"; it will return something like "suhn")
 
 # Utilities
-### these are stored in jutils/
+##### these are stored in jutils/
 
 ## Keyboard
 A class to facilitate reading user input
