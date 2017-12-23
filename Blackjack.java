@@ -23,9 +23,11 @@ public class Blackjack {
     public Blackjack() {
 	playerCash = 100;
 	computerCash = 100;
+	totalBet = 0;
     }
 
     public Blackjack(int pc, int cc) {
+	this();
 	playerCash = pc;
 	computerCash = cc;
     }
@@ -40,6 +42,8 @@ public class Blackjack {
 
 	outside:
 	while (true) {
+
+	    System.out.println("Hand: " + playerHand);
 
 	    System.out.println("You have " + playerCash + " dollars");
 
@@ -57,25 +61,24 @@ public class Blackjack {
 	    System.out.println("Sum: " + handSum(playerHand));
 
 	    int pbet = 1;
-	    top:
-	    while (true) {
-		boolean toBreak = true;
-		System.out.print("How much do you want to bet?\n" +
-				   "(You will bet at least 1 dollar)\nBet: ");
-		try {
-		    pbet = Integer.parseInt(Keyboard.readString());
+	    if (playerCash > 0) {
+		while (true) {
+		    boolean toBreak = true;
+		    System.out.print("How much do you want to bet?\n" +
+				     "(You will bet at least 1 dollar)\nBet: ");
+		    try {
+			pbet = Integer.parseInt(Keyboard.readString());
+		    }
+		    catch (Exception e) { toBreak = false; }
+		    if (toBreak) break;
 		}
-		catch (Exception e) { toBreak = false; }
-		if (toBreak) break;
-	    }
-	    if (pbet <= 0) pbet = 1;
-	    if (pbet <= playerCash) {
-		playerCash -= pbet;
-		totalBet += playerCash;
-	    }
-	    else {
-		totalBet += playerCash;
-		playerCash = 0;
+		if (pbet <= 0) playerBet(1);
+		else if (pbet <= playerCash) {
+		    playerBet(pbet);
+		}
+		else {
+		    playerBet(playerCash);
+		}
 	    }
 
 	    //hit or hold
@@ -111,6 +114,12 @@ public class Blackjack {
 
 	while (true) {
 
+	    if (computerCash > playerCash && computerCash >= 10) {
+		int compbet = (int)(Math.random() * 10 + 1);
+		computerBet(compbet);
+		System.out.println("The computer bet " + compbet + " dollars");
+	    }
+
 	    if (handSum(computerHand) == 21) break;
 	    else if (handSum(computerHand) > 21) {
 		System.out.println("\nComputer hand:  " + computerHand);
@@ -119,12 +128,6 @@ public class Blackjack {
 		return false;
 	    }
 	    else if (handSum(computerHand) > handSum(playerHand)) break;
-
-	    if (computerCash > playerCash && computerCash >= 10) {
-		int compbet = (int)(Math.random() * 11);
-		computerBet(compbet);
-		System.out.println("The computer bet " + compbet + " dollars");
-	    }
 
 	    int indexToAdd = (int)(Math.random() * deck.size());
 	    computerHand.add(deck.get(indexToAdd));
@@ -181,14 +184,17 @@ public class Blackjack {
 	if (!playerTurn()) {
 	    System.out.println("\nComputer: Woot woot!");
 	    System.out.println("Computer wins!");
+	    computerCash += totalBet;
 	}
 	else if (!computerTurn()) {
 	    System.out.println("\nYou: Woot woot!");
 	    System.out.println("You win!");
+	    playerCash += totalBet;
 	}
 	else if (handSum(playerHand) > handSum(computerHand)) {
 	    System.out.println("\nYou: Woot woot!");
 	    System.out.println("You win!");
+	    playerCash += totalBet;
 	}
 	else if (handSum(playerHand) == handSum(computerHand)) {
 	    System.out.println("\nYou and Computer: It's a tie!");
@@ -196,6 +202,7 @@ public class Blackjack {
 	else {
 	    System.out.println("\nComputer: Woot woot!");
 	    System.out.println("Computer wins!");
+	    computerCash += totalBet;
 	}
 
 	if (computerCash <= 0) {
@@ -214,7 +221,7 @@ public class Blackjack {
     public static void main(String[] args) {
 	Blackjack game;
 	game = new Blackjack();
-	game.playGame();
+	if (game.playGame()) return;;
 	while (true) {
 	    System.out.print("\n\nPlay again? (y/n): ");
 	    String choice = Keyboard.readString();
