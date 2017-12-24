@@ -42,6 +42,11 @@ character (like "aaaa"; it will return something like "suhn")
 The simple, yet fun game of Blackjack! Player vs. Computer. Multiplayer
 (hopefully) coming soon!
 
+## TextAnimation
+A proof-of-concept type file to test text-based animation.
+Will not be edited or improved upon, though some of the 
+techniques learned here may be used in future projects :)
+
 # Utilities
 ##### these are stored in jutils/
 
