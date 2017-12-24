@@ -4,6 +4,21 @@ WARNING: a lot of code here may not have comments whoops
 
 # Classes
 
+## CSVEditor
+A Java program for editing csv files. Warns user if file seems too large to
+print. This program can
+- Add
+  * Elements
+  * Rows
+  * Columns
+- Remove
+  * Elements
+  * Rows
+  * Columns
+- Replace elements
+- Print file
+- Write file
+
 ## TestChoices
 A Java program that  tests whether one should pick random answers or stick
 with one answer while guessing on a test

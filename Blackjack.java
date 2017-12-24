@@ -210,7 +210,7 @@ public class Blackjack {
 	    return true;
 	}
 	else if (playerCash <= 0) {
-	    System.out.println("You lost! You have no money left!");
+	    System.out.println("You lost all you money and your wife left you");
 	    return true;
 	}
 
