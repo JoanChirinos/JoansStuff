@@ -39,7 +39,6 @@ package jutils;
  * rectangular and it will be written as a rectangular csv file            *
  ***************************************************************************/
 
-import jutils.Keyboard;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -52,7 +51,7 @@ public class CSVRW {
     public CSVRW() {
         _fileContents = new ArrayList<ArrayList<String>>();
 	_fileContents.add(new ArrayList<String>());
-	_fileContents.get(0).add("");
+	_fileContents.get(0).add(null);
     }
 
     //reads file and stores content in _fileContents
@@ -95,7 +94,7 @@ public class CSVRW {
 		    maxLength = _fileContents.get(r).size();
 	    for (int r = 0; r < _fileContents.size(); r++) {
 		while (_fileContents.get(r).size() < maxLength)
-		    _fileContents.get(r).add("");
+		    _fileContents.get(r).add(null);
 	    }
 	}
     }//end rectangularize
@@ -124,6 +123,17 @@ public class CSVRW {
 	}
 	return ret;
     }//end toString
+
+    public int size() {
+	return _fileContents.size();
+    }//end size
+
+    public ArrayList<String> get(int index) {
+	if (index < 0 || index > _fileContents.size() - 1) {
+	    throw new IllegalArgumentException("\n\tInvalid index");
+	}
+	return _fileContents.get(index);
+    }//end get
 
     //writes _fileContents to fileName.csv
     //if fileName.csv exists, overwrites it
@@ -165,7 +175,7 @@ public class CSVRW {
 	}
 	ArrayList<String> toAdd = new ArrayList<String>();
 	for (int c = 0; c < _fileContents.get(0).size(); c++)
-	    toAdd.add("");
+	    toAdd.add(null);
 	_fileContents.add(index, toAdd);
 	return index;
     }//end arrRow(int, int)
@@ -179,21 +189,21 @@ public class CSVRW {
     public int addColumn() {
 	return addColumn(_fileContents.get(0).size());
     }//end addColumn()
-
+    
     //adds a blank string at index index of each row
     //--Returns index of addition
     public int addColumn(int index) {
 	if (index < 0 || index > _fileContents.get(0).size())
 	    throw new IllegalArgumentException("\n\tInvalid index");
-	for (int r = 0; r < _fileContents.get(0).size(); r++)
-	    _fileContents.get(r).add(index, "");
+	for (int r = 0; r < _fileContents.size(); r++)
+	    _fileContents.get(r).add(index, null);
 	return index;
     }//end addColumn(int)
 
     /**************************************************************
      * For all removeRow methods, all other rows get pushed to up *
      **************************************************************/
-
+    
     //removes row from end of _fileContents
     //-->Returns removed row
     public ArrayList<String> removeRow() {

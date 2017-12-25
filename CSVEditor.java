@@ -10,122 +10,86 @@
 
 /**********************************************************************
  * Stand-alone CSV editor
- * Should use jutils.CSVRW (change coming soon?)
  * Compile and run to use the program
  **********************************************************************/
 
-import java.io.*;
-import java.util.ArrayList;
 import jutils.Keyboard;
+import jutils.CSVRW;
+import java.util.ArrayList;
+import java.io.*;
 
 public class CSVEditor {
 
-    private ArrayList<ArrayList<String>> fileContents;
-    private String openFile;
+    private CSVRW _fileContents;
+    private String _openFile;
     private boolean printWarn;
     private int DEFAULT_MAX_PRINT_SIZE = 5;
     private boolean printAnyway;
 
     public CSVEditor() {
-	fileContents = new ArrayList<ArrayList<String>>();
-	openFile = "";
+	_fileContents = new CSVRW();
+	_openFile = "";
 	printWarn = false;
 	printAnyway = true;
     }//end constructor
 
-    public void open(String fileName) {
-	fileContents = new ArrayList<ArrayList<String>>();
+    public boolean open(String fileName) {
+	clearCSVEditor();
 	if (fileName.equals("")) {
 	    System.out.println("Invalid file!");
 	}
 	else {
-	    openFile = "";
 	    File f = new File("./" + fileName);
-	    if (f.exists()) openFile = fileName;
+	    if (f.exists()) {
+		_openFile = fileName;
+		_fileContents = new CSVRW(fileName);
+	    }
 	    else {
 		System.out.println("File doesn't exist!");
 		System.out.println("Create new file? (y/n)");
 		String choice = Keyboard.readString().toLowerCase();
 		if (choice.equals("y")) {
-		    try {
-			FileWriter fw = new FileWriter(fileName);
-			BufferedWriter bw = new BufferedWriter(fw);
-			bw.write("");
-			bw.close();
-		    }
-		    catch (IOException e) {
-			System.out.println("File writing went wrong");
-		    }
-		    openFile = fileName;
+		    _fileContents = new CSVRW();
+		    _openFile = fileName;
 		    System.out.print("Rows: ");
 		    int r = Keyboard.readInt();
 		    if (r < 1) r = 1;
+		    while (r > 1) {
+			_fileContents.addRow();
+			r--;
+		    }
+		    
 		    System.out.print("Columns: ");
 		    int c = Keyboard.readInt();
 		    if (c < 1) c = 1;
-		    for ( ; r > 0; r--) {
-			ArrayList<String> a = new ArrayList<String>();
-			for (int col = c; col > 0; col--)
-			    a.add(null);
-			fileContents.add(a);
+		    while (c > 1) {
+			_fileContents.addColumn();
+			c--;
 		    }
 		}
+		else return false;
 	    }
-	    read();
+	    warn();
 	}
+	return true;
     }//end open
 
-    public void read() {
-	String toAdd;
-        try {
-	    FileReader fr = new FileReader(openFile);
-	    BufferedReader br = new BufferedReader(fr);
-	    while ((toAdd = br.readLine()) != null) {
-		String[] toAddList = toAdd.split(",");
-		ArrayList<String> toAddAL = new ArrayList<String>();
-		for (String i : toAddList)
-		    toAddAL.add(i);
-		fileContents.add(toAddAL);
-	    }
-	    br.close();
-	}
-	catch (FileNotFoundException e) {
-	    System.out.println("Unable to read " + openFile);
-	}
-	catch (IOException e) {
-	    System.out.println("Error when reading file " + openFile);
-	}
-	if (fileContents.size() > DEFAULT_MAX_PRINT_SIZE ||
-	    fileContents.get(0).size() > DEFAULT_MAX_PRINT_SIZE) {
+    public void warn() {
+	if (_fileContents.size() > DEFAULT_MAX_PRINT_SIZE ||
+	    _fileContents.get(0).size() > DEFAULT_MAX_PRINT_SIZE) {
 	    printWarn = true;
 	    printAnyway = false;
 	}
     }//end read
 
     public void write() {
-	if (openFile.equals(""))
+	if (_openFile.equals(""))
 	    System.out.println("Open a file first!");
-	else {
-	    String toAdd = "";
-	    if (fileContents.size() != 0 && fileContents.get(0).size() != 0) {
-		for (int r = 0; r < fileContents.size(); r++) {
-		    for (int c = 0; c < fileContents.get(r).size(); c++)
-			toAdd += fileContents.get(r).get(c) + ",";
-		    toAdd = toAdd.substring(0, toAdd.length() - 1);
-		    toAdd += "\n";
-		}
-	    }
-	    System.out.println(toAdd);
-	    try {
-		FileWriter fw = new FileWriter(openFile);
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(toAdd);
-		bw.close();
-	    }
-	    catch (IOException e) {
-		System.out.println("File writing went wrong");
-	    }	    
-	}
+	String fileName = _openFile;
+	if (!(_openFile.substring(_openFile.length() - 4).equals(".csv")))
+	    fileName += ".csv";
+        _fileContents.write(fileName);
+	System.out.println("Wrote " + fileName);
     }//end write
     
     public void replace() {
@@ -137,30 +101,21 @@ public class CSVEditor {
 	System.out.print("New value: ");
 	String newVal = Keyboard.readString();
 	try {
-	    ArrayList<String> row = fileContents.get(r - 1);
-	    row.set(c - 1, newVal);
-	    fileContents.set(r - 1, row);
+	    _fileContents.set(r - 1, c - 1, newVal);
 	}
-	catch (IndexOutOfBoundsException e) {
-	    System.out.println("Row or column not valid");
+	catch (IllegalArgumentException e) {
+	    System.out.println("Invalid row/column");
 	}
 	System.out.println();
     }//end replace
 
-        public void replace(String str) {
+    public void removeElement() {
 	printFile();
 	System.out.print("Row: ");
 	int r = Keyboard.readInt();
 	System.out.print("Column: ");
 	int c = Keyboard.readInt();
-	try {
-	    ArrayList<String> row = fileContents.get(r - 1);
-	    row.set(c - 1, "");
-	    fileContents.set(r - 1, row);
-	}
-	catch (IndexOutOfBoundsException e) {
-	    System.out.println("Row or column not valid");
-	}
+        _fileContents.delete(r - 1, c - 1);
 	System.out.println();
     }//end replace
 
@@ -205,7 +160,7 @@ public class CSVEditor {
 		break;
 	    }
 	    else if (choice.equals("element")) {
-		replace("");
+		removeElement();
 		break;
 	    }
 	    else if (choice.equals("back"))
@@ -220,33 +175,30 @@ public class CSVEditor {
 	System.out.print("Row: ");
 	int choice = Keyboard.readInt();
 	choice--;
-	if (choice >= fileContents.size() || choice < -1) {
-	    System.out.println("Removal canceled");
-	    return;
-	}
-	else {
-	    fileContents.remove(choice);
+	try {
+	    _fileContents.removeRow(choice);
 	    System.out.println("Row " + (choice + 1) + " removed");
+	}
+	catch (IllegalArgumentException e) {
+	    System.out.println("Removal canceled");
 	}
     }//end removeRow
 
     public void removeCol() {
 	printFile();
 	System.out.println("Which row would you like to remove?" +
-			   "\n > All other rows will be pushed up");
-	System.out.print("Row: ");
+			   "\n > All other columns will be pushed left");
+	System.out.print("Column: ");
 	int choice = Keyboard.readInt();
 	choice--;
-	if (choice >= fileContents.get(0).size() || choice < -1) {
+	try {
+	    _fileContents.removeColumn(choice);
+	    System.out.println("Column " + (choice + 1) + " removed");
+	}
+	catch (IllegalArgumentException e) {
 	    System.out.println("Removal canceled");
-	    return;
 	}
-	else {
-	    for (int i = 0; i < fileContents.size(); i++)
-		fileContents.get(i).remove(choice);
-	    System.out.println("Row " + (choice + 1) + " removed");
-	}
-    }
+    }//end removeCol
 
     public void add() {
 	while (true) {
@@ -277,23 +229,23 @@ public class CSVEditor {
     public void addCol() {
 	printFile();
 	System.out.println("Where would you like to add the column?" +
-			   "\n > All other columns will be pushed left" +
+			   "\n > All other columns will be pushed right" +
 			   "\n > To add a new column at the end, enter 0" +
 			   "\n > Enter -1 to cancel");
 	System.out.print("Column: ");
 	int choice = Keyboard.readInt();
 	choice--;
-	if (choice >= fileContents.get(0).size() || choice < -1) {
-	    System.out.println("Addition canceled");
-	    return;
+	if (choice == -1)
+	    _fileContents.addColumn();
+	else {
+	    try {
+		_fileContents.addColumn(choice);
+	    }
+	    catch (IllegalArgumentException e) {
+		System.out.println("Addition cancelled");
+	    }
 	}
-	else if (choice == -1)
-	    for (int i = 0; i < fileContents.size(); i++)
-		fileContents.get(i).add("");
-	else
-	    for (int i = 0; i < fileContents.size(); i++)
-		fileContents.get(i).add(choice, "");
-    }//end addrow
+    }//end addCol
 
     public void addRow() {
 	printFile();
@@ -304,24 +256,17 @@ public class CSVEditor {
 	System.out.print("Row: ");
 	int choice = Keyboard.readInt();
 	choice--;
-	if (choice >= fileContents.size() || choice < -1) {
-	    System.out.println("Addition canceled");
-	    return;
-	}
-	else if (choice == -1) {
-	    ArrayList<String> a = new ArrayList<String>();
-	    for (int i = 0; i < fileContents.get(0).size(); i++)
-		a.add("");
-	    fileContents.add(a);
-	}
+	if (choice == -1)
+	    _fileContents.addRow();
 	else {
-	    ArrayList<String> a = new ArrayList<String>();
-	    for (int i = 0; i < fileContents.get(0).size(); i++)
-		a.add("");
-	    fileContents.add(choice, a);
+	    try {
+		_fileContents.addRow(choice);
+	    }
+	    catch (IllegalArgumentException e) {
+		System.out.println("Addition cancelled");
+	    }
 	}
-	
-    }//end addCol
+    }//end addRow
 
     public void printFile() {
 	if (!printAnyway && printWarn) {
@@ -331,23 +276,19 @@ public class CSVEditor {
 	    if (choice.equals("y"))
 		printAnyway = true;
 	}
-	if (printAnyway) {
-	    System.out.println();
-	    for (ArrayList<String> i : fileContents)
-		System.out.println("\t" + i);
-	    System.out.println();
-	}
+	if (printAnyway)
+	    System.out.println(_fileContents);
     }//end printFile
 
     public String getOpenFile() {
-	return openFile;
+	return _openFile;
     }//end getOpenFile
 
     public void clearCSVEditor() {
-	openFile = "";
-	fileContents = new ArrayList<ArrayList<String>>();
+	_openFile = "";
+	_fileContents = new CSVRW();
 	printWarn = false;
-	printAnyway = false;
+	printAnyway = true;
     }//end clearCSVEditor
 
     public static void main(String[] args) {
@@ -369,7 +310,7 @@ public class CSVEditor {
 
 		//to open file
 		else if (choice.substring(0, 4).equals("open")) {
-		    ce.open(choice.substring(5));
+		    if (!(ce.open(choice.substring(5)))) break;
 		    while (true) {
 
 			System.out.println("\nFile currently open: " +
@@ -379,7 +320,7 @@ public class CSVEditor {
 					   "\n\tprint" +
 					   "\n\tedit" +
 					   "\n\twrite" +
-					   "\n\tback");
+					   "\n\tclose");
 			System.out.println("What would you like to do?");
 			String openchoice = Keyboard.readString().toLowerCase();
 
@@ -390,15 +331,14 @@ public class CSVEditor {
 			    ce.editFile();
 			else if (openchoice.equals("write"))
 			    ce.write();
-			else if (openchoice.equals("back")) {
+			else if (openchoice.equals("close")) {
 			    System.out.println("You will lose everything you" +
 					       " haven't write-ed!\nAre you" +
-					       " sure you want to go back?" +
+					       " sure you want to close?" +
 					       "(y/n)");
 			    String backchoice = Keyboard.readString();
 			    backchoice = backchoice.toLowerCase();
 			    if (backchoice.equals("y")) {
-				ce.clearCSVEditor();
 				break;
 			    }
 			}
@@ -407,7 +347,7 @@ public class CSVEditor {
 		else if (choice.equals("exit"))
 		    break;
 	    }
-	    catch (Exception e) { System.out.println("Something went wrong"); }
+	    catch (Exception e) { System.out.println(e); }
 	    }
 	
     }//end main

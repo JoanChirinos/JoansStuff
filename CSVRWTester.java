@@ -76,6 +76,15 @@ public class CSVRWTester {
 	System.out.println("\nset(0, 0, \"Lastest Name\")");
 	System.out.println("replaced: " + c.set(0, 0, "Lastest Name"));
 	System.out.println(c);
+
+	CSVRW blanktest = new CSVRW();
+	System.out.println(blanktest);
+	for (int i = 0; i < 4; i++) {
+	    blanktest.addRow();
+	    blanktest.addColumn();
+	    System.out.println(blanktest);
+	}
+	
     }
 
 }//end class
