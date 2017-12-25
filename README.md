@@ -6,7 +6,7 @@ WARNING: a lot of code here may not have comments whoops
 
 ## CSVEditor
 A Java program for editing csv files. Warns user if file seems
-too large to print. Simply compile and run to use. Utilizes CSVRW
+too large to print. Simply compile and run to use. Utilizes jutils.CSVRW
 
 ## TestChoices
 A Java program that  tests whether one should pick random answers or stick
