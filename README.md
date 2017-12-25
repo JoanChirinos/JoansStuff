@@ -5,8 +5,8 @@ WARNING: a lot of code here may not have comments whoops
 # Classes
 
 ## CSVEditor
-A Java program for editing csv files. Warns user if file seems too large to
-print. This program can
+A Java program for editing csv files. Warns user if file seems
+too large to print. This program can
 - Add
   * Elements
   * Rows
@@ -49,6 +49,100 @@ techniques learned here may be used in future projects :)
 
 # Utilities
 ##### these are stored in jutils/
+
+## CSVRW
+A class to facilitate reading, editing, and writing csv files.
+This works with all csv files, but will only output one that
+are rectangular (each row has the same number of elements).
+Note that this is coded with programmers in mind, so the
+first element of the first row is at (0, 0)
+
+### Instance vars
+- ArrayList<ArrayList<String>> _fileContents: Acts as a buffer
+to store contents of csv file and changes made before writing
+
+### Constructors
+- CSVRW(): Stores a new 1x1 file in the buffer with 1 empty
+string
+
+- CSVRW(String fileName): Opens and reads fileName and stores
+the data in the buffer
+  - Throws: IllegalArgumentException if String doesn't end
+            in .csv, file does not exist, or the program
+            is unable to read the file
+
+### Methods
+
+- String toString(): Returns _fileContents in format
+element,element,element...
+element,element,element...
+...
+
+- String write(String fileName): deletes file fileName and 
+writes new file with _fileContents saved in it
+  - Returns: String fileName
+  - Throws: IllegalArgumentException if unable to write to
+            file
+
+- int addRow(): adds a row of empty Strings to the end of 
+_fileContents
+  - Returns: index of insertion
+
+- int addRow(int index): adds a row of empty Strings to index
+of _fileContents
+  - Returns: index
+  - Throws: IllegalArgumentException if index is invalid
+
+- int addColumn(): adds an element at the end of each row of
+_fileContents
+  - Returns: index of column insertion
+
+- int addColumn(int index): adds an element to index of each
+row of _fileContents
+  - Returns: index
+  - Throws: IllegalArgumentException if index is invalid
+
+- ArrayList<String> removeRow(): removes last element from
+each row of_fileContents
+  - Returns: ArrayList<String> containing elements from the
+             deleted row
+
+- ArrayList<String> removeRow(int index): removes element at
+index of each row of _fileContents
+  - Returns: ArrayList<String> containing elements from the
+             deleted row
+  - Throws: IllegalArgumentException if index is invalid
+
+- ArrayList<String> removeColumn(): removes element from the
+end of each row of _fileContents
+  - Returns: ArrayList<String> of removed elements
+
+- ArrayList<String> removeColumn(int index): removes element at
+index from each row of _fileContents
+  - Returns: ArrayList<String> of removed elements
+  - Throws: IllegalArgumentException if index is invalid
+
+- String set(int r, int c, String newVal): sets element at
+row r and column c of _fileContents to String newVal
+  - Returns: the value being replaced
+  - Throws: IllegalArgumentException if index is invalid
+
+- String delete(int r, int c): sets element at row r and
+column c to an empty String
+  - Returns: the value being replaced
+
+## FileRW
+A Java program for reading and writing any file. Does not have
+editing capabilities built in
+### Methods
+- String read(String): opens and reads file.
+  - Returns: raw text from the file
+  - Throws: IllegalArgumentException if file does not exist or
+            is unreadable
+
+- void write(String toWrite, String fileName): writes toWrite
+to file fileName
+  - Throws: IllegalArgumentException if unable to write to file
 
 ## Keyboard
 A class to facilitate reading user input

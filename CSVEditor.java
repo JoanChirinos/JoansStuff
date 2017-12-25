@@ -5,8 +5,14 @@
 / /_/ / /_/ / /_/ / / / /  / /___/ / / / / /  / / / / / /_/ (__  ) 
 \____/\____/\__,_/_/ /_/   \____/_/ /_/_/_/  /_/_/ /_/\____/____/  
 
-~Joan Chirinos, December 23. 2017
+~Joan Chirinos, December 23, 2017
 */
+
+/**********************************************************************
+ * Stand-alone CSV editor
+ * Should use jutils.CSVRW (change coming soon?)
+ * Compile and run to use the program
+ **********************************************************************/
 
 import java.io.*;
 import java.util.ArrayList;
