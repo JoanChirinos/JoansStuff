@@ -67,6 +67,10 @@ element,element,element...
 element,element,element...
 ...
 
+- int size(): Returns the number of rows
+
+- ArrayList<ArrayList<String>> get(): Returns _fileContents
+
 - String write(String fileName): deletes file fileName and 
 writes new file with _fileContents saved in it
   - Returns: String fileName

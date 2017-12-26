@@ -124,15 +124,14 @@ public class CSVRW {
 	return ret;
     }//end toString
 
+    //reurns # of rows
     public int size() {
 	return _fileContents.size();
     }//end size
 
-    public ArrayList<String> get(int index) {
-	if (index < 0 || index > _fileContents.size() - 1) {
-	    throw new IllegalArgumentException("\n\tInvalid index");
-	}
-	return _fileContents.get(index);
+    //returns _fileContents
+    public ArrayList<ArrayList<String>> get() {
+        return _fileContents;
     }//end get
 
     //writes _fileContents to fileName.csv
