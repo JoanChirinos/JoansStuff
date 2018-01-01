@@ -11,7 +11,7 @@ package jutils;
 */
 
 /***************************************************************************
- * CSVRW: Comma Separated Value Reading Writing [utility]                  *
+ * CSVRW: Comma Separated Value Reader and Writer [utility]                *
  * See README for detailed explanations of methods and constructors        *
  * Constructors:                                                           *
  *    CSVRW()                                                              *
