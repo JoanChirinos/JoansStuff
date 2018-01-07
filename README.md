@@ -52,9 +52,6 @@ techniques learned here may be used in future projects :)
 ## Calculator
 WIP
 
-## LbraryLogin
-WIP
-
 # Utilities
 ##### these are stored in jutils/
 
