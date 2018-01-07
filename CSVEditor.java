@@ -76,7 +76,7 @@ public class CSVEditor {
 
     public void warn() {
 	if (_fileContents.size() > DEFAULT_MAX_PRINT_SIZE ||
-	    _fileContents.get(0).size() > DEFAULT_MAX_PRINT_SIZE) {
+	    _fileContents.get().get(0).size() > DEFAULT_MAX_PRINT_SIZE) {
 	    printWarn = true;
 	    printAnyway = false;
 	}

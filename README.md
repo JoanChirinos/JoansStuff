@@ -8,6 +8,19 @@ WARNING: a lot of code here may not have comments whoops
 A Java program for editing csv files. Warns user if file seems
 too large to print. Simply compile and run to use. Utilizes jutils.CSVRW
 
+## ScrabbleCheats/ScrabbleSolver.py
+A Python program that uses the official Scrabble dictionary (as of 2016) to
+suggest words. Returns all possible word combinations, sorted by most points
+to fewest
+To use the program, type "python path/to/ScrabbleSolver.py dict.txt
+<(optional) letter to start with> <letters you have> <(optional) letter to end
+with>
+For example, if your rack contained "exkeped" and you wanted to start with
+the letter "d", you would type "python path/to/ScrabbleSolver.py dict.txt
+d exkeped"
+Note that dict.txt could be updated with a new dictionary in the form
+"<word1>\n<word2>\n<word3>\n..."
+
 ## TestChoices
 A Java program that  tests whether one should pick random answers or stick
 with one answer while guessing on a test
