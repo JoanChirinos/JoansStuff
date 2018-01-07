@@ -19,7 +19,7 @@ For example, if your rack contained "exkeped" and you wanted to start with
 the letter "d", you would type "python path/to/ScrabbleSolver.py dict.txt
 d exkeped"
 Note that dict.txt could be updated with a new dictionary in the form
-"<word1>\n<word2>\n<word3>\n..."
+"word1\nword2\nword3\n..."
 
 ## TestChoices
 A Java program that  tests whether one should pick random answers or stick
