@@ -21,6 +21,10 @@ d exkeped"
 Note that dict.txt could be updated with a new dictionary in the form
 "word1\nword2\nword3\n..."
 
+## FizzBuzz
+A FizzBuzz engine that is easily expandable to check for more remainders.
+See the code for instructions and explanations
+
 ## TestChoices
 A Java program that  tests whether one should pick random answers or stick
 with one answer while guessing on a test
