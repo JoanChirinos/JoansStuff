@@ -19,7 +19,6 @@ public class Grapher {
 
   //Instance Vars
 
-<<<<<<< HEAD
   //data is { {xval, yval}, ... }
   private ArrayList<ArrayList<Double>> _data;
 
@@ -65,17 +64,5 @@ public class Grapher {
       System.out.println();
     }
   }//end display
-=======
-  //data is { {xval, yval}, {xval, yval}, ... }
-  private ArrayList<ArrayList<Double>> _data;
-
-  public Grapher() {
-    _data = new ArrayList<ArrayList<Double>>();
-  }
-
-  public void graph(String equation) {
-
-  }
->>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
 
 }//end class
