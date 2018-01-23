@@ -5,7 +5,11 @@
 / /_/ / /_/ / /_/ / / / /  / /___/ / / / / /  / / / / / /_/ (__  )
 \____/\____/\__,_/_/ /_/   \____/_/ /_/_/_/  /_/_/ /_/\____/____/
 
+<<<<<<< HEAD
 ~Joan Chirinos, January 23, 2018
+=======
+~Joan Chirinos, <DATE>
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
 */
 
 /**********************************************************************
@@ -13,14 +17,21 @@
  **********************************************************************/
 
  import java.util.ArrayList;
+<<<<<<< HEAD
  import jutils.*;
+=======
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
 
  public class TestGrapher {
 
    public static void main(String[] args) {
      Grapher g = new Grapher();
+<<<<<<< HEAD
      g.graph("x^(2) - 5");
      g.display();
    }//end main
+=======
+   }
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
 
  }//end class

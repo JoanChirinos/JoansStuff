@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 package jutils;
 
+=======
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
 /*
        __                     ________    _      _
       / /___  ____ _____     / ____/ /_  (_)____(_)___  ____  _____
@@ -17,6 +20,7 @@ package jutils;
  public class CalcUtil {
 
    public static double mathify(String expression) {
+<<<<<<< HEAD
      expression = " " + expression;
      String[] sides;
      if (expression.indexOf("^(") != -1) {
@@ -24,23 +28,57 @@ package jutils;
        sides[0] = expression.substring(0, expression.lastIndexOf(" ", expression.indexOf("^(")));
        sides[1] = expression.substring(expression.lastIndexOf(" ", expression.indexOf("^(")), 1 + expression.indexOf(")", expression.indexOf("^(")));
        sides[2] = expression.substring(expression.indexOf(")", expression.indexOf("^(")) + 1);
+=======
+
+     System.out.println("To solve: " + expression);
+     expression = " " + expression;
+
+     String[] sides;
+
+
+     if (expression.indexOf("^(") != -1) {
+       System.out.println("Raising");
+       sides = new String[3];
+       sides[0] = expression.substring(0, expression.lastIndexOf(" ", expression.indexOf("^(")));
+       System.out.println("0: " + sides[0]);
+       sides[1] = expression.substring(expression.lastIndexOf(" ", expression.indexOf("^(")), 1 + expression.indexOf(")", expression.indexOf("^(")));
+       System.out.println("1 " + sides[1]);
+       sides[2] = expression.substring(expression.indexOf(")", expression.indexOf("^(")) + 1);
+       System.out.println("2: " + sides[2]);
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
        double base = Double.parseDouble(sides[1].split("\\^\\(")[0]);
        String power = sides[1].split("\\^\\(|\\)")[1];
        return mathify(sides[0] + " " + Math.pow(base, mathify(power)) + " " + sides[2]);
      }
      else if (expression.indexOf(" + ") != -1) {
+<<<<<<< HEAD
+=======
+       System.out.println("Adding");
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
        sides = expression.split(" \\+ ", 2);
        return mathify(sides[0]) + mathify(sides[1]);
      }
      else if (expression.indexOf(" - ") != -1) {
+<<<<<<< HEAD
+=======
+       System.out.println("Subtracting");
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
        sides = expression.split(" - ", 2);
        return mathify(sides[0]) - mathify(sides[1]);
      }
      else if (expression.indexOf(" * ") != -1) {
+<<<<<<< HEAD
+=======
+       System.out.println("Multiplying");
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
        sides = expression.split(" \\* ", 2);
        return mathify(sides[0]) * mathify(sides[1]);
      }
      else if (expression.indexOf(" / ") != -1) {
+<<<<<<< HEAD
+=======
+       System.out.println("Dividing");
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
        sides = expression.split(" \\/ ", 2);
        return mathify(sides[0]) / mathify(sides[1]);
      }
@@ -57,4 +95,11 @@ package jutils;
      }
    }//end mathify
 
+<<<<<<< HEAD
+=======
+   public static void main(String[] args) {
+     System.out.println(mathify("2 + 3^(2) / 3"));
+   }
+
+>>>>>>> 3c58691debc03473264df71e361b51348c5b48f9
  }//end class
