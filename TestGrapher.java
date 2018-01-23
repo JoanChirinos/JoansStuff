@@ -5,7 +5,7 @@
 / /_/ / /_/ / /_/ / / / /  / /___/ / / / / /  / / / / / /_/ (__  )
 \____/\____/\__,_/_/ /_/   \____/_/ /_/_/_/  /_/_/ /_/\____/____/
 
-~Joan Chirinos, <DATE>
+~Joan Chirinos, January 23, 2018
 */
 
 /**********************************************************************
@@ -13,11 +13,14 @@
  **********************************************************************/
 
  import java.util.ArrayList;
+ import jutils.*;
 
  public class TestGrapher {
 
    public static void main(String[] args) {
      Grapher g = new Grapher();
-   }
+     g.graph("x^(2) - 5");
+     g.display();
+   }//end main
 
  }//end class
