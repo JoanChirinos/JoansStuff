@@ -5,7 +5,7 @@
 / /_/ / /_/ / /_/ / / / /  / /___/ / / / / /  / / / / / /_/ (__  )
 \____/\____/\__,_/_/ /_/   \____/_/ /_/_/_/  /_/_/ /_/\____/____/
 
-~Joan Chirinos, <DATE>
+~Joan Chirinos, January 23, 2018
 */
 
 /**********************************************************************
@@ -32,6 +32,8 @@ public class Grapher {
 
   //graphs in xrange[-10, 10) and yrange[10, 10) with a 0.5 step
   public void graph(String equation) {
+    _data = new ArrayList<ArrayList<Double>>();
+    _points = new ArrayList<ArrayList<String>>();
     for (int i = 0; i < 40; i++) {
       _data.add(new ArrayList<Double>());
       _data.get(i).add(i * 0.5 - 10);
@@ -40,14 +42,36 @@ public class Grapher {
     for (int r = 0; r < 40; r++) {
       _points.add(new ArrayList<String>());
       for (int c = 0; c < 40; c++) {
-        _points.get(r).add(" ");
+        if (r == 19 && c % 2 == 0) {
+          String numberToAdd = "" + (20 - c);
+          if (numberToAdd.length() == 1) {
+            numberToAdd = " " + numberToAdd + " ";
+          }
+          else if (numberToAdd.length() == 2) {
+            numberToAdd = " " + numberToAdd;
+          }
+          _points.get(r).add(numberToAdd);
+        }
+        else if (r  % 2 == 0 && c == 20) {
+          String numberToAdd = "" + (20 - r);
+          if (numberToAdd.length() == 1) {
+            numberToAdd = " " + numberToAdd + " ";
+          }
+          else if (numberToAdd.length() == 2) {
+            numberToAdd = " " + numberToAdd;
+          }
+          _points.get(r).add(numberToAdd);
+        }
+        else {
+          _points.get(r).add("   ");
+        }
       }
     }
     for (ArrayList<Double> i : _data) {
       int xc = (int)((i.get(0) + 10) * 2);
       int yr = (int)(20 - (Math.round(i.get(1) * 2)) - 1);
       try {
-        _points.get(yr).set(xc, "*");
+        _points.get(yr).set(xc, " * ");
       }
       catch (Exception e) { }
     }
