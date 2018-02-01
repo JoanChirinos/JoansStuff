@@ -1,27 +1,31 @@
 public class Cell {
 
-  private String _state;
+  private int _state;
 
   public Cell() {
-    _state = " ";
+    _state = 0;
   }//end Cell()
 
-  public Cell(String newState) {
+  public Cell(int newState) {
     _state = newState;
   }//end Cell(String)
 
-  public String getState() {
+  public int getState() {
     return _state;
   }//end getState
 
-  public String setState(String newState) {
-    String oldState = getState();
+  public int setState(int newState) {
+    int oldState = getState();
     _state = newState;
     return oldState;
   }//end setState
 
   public String toString() {
-    return getState();
+    return "" + getState();
   }//end toString
+
+  public boolean equals(int x) {
+    return _state == x;
+  }
 
 }//end class

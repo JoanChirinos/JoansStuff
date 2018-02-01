@@ -15,28 +15,35 @@
  row, column, element number, value
  ...
 
- MUST have >= 2^(rank) - 1 defined data values
+ MUST have >= 2^(_rank) - 1 defined data values
  **********************************************************************/
 
 import jutils.*;
 
  public class Board {
 
-   private int[][][] _board;
+   private Cell[][][] _board;
    private int _rank;
 
    public Board(String loadFrom) {
      String r = FileRW.read(loadFrom);
      String[] data = r.split("\n");
      _rank = Integer.parseInt(data[0]);
-     _board = new int[_rank][_rank][_rank * _rank];
+     _board = new Cell[_rank][_rank][_rank * _rank];
+     for (int row = 0; row < _rank; row++) {
+       for (int col = 0; col < _rank; col++) {
+         for (int el = 0; el < _rank * _rank; el++) {
+           _board[row][col][el] = new Cell();
+         }
+       }
+     }
      for (int i = 1; i < data.length; i++) {
        String[] temp = data[i].split(",");
-       _board[Integer.parseInt(temp[0])][Integer.parseInt(temp[1])][Integer.parseInt(temp[2])] = Integer.parseInt(temp[3]);
+       _board[Integer.parseInt(temp[0])][Integer.parseInt(temp[1])][Integer.parseInt(temp[2])] = new Cell(Integer.parseInt(temp[3]));
      }
    }//end constructor
 
-   public int[][][] getBoard() {
+   public Cell[][][] getBoard() {
      return _board;
    }//end getBoard
 
@@ -44,12 +51,12 @@ import jutils.*;
      return _rank;
    }
 
-   public int getEl(int r, int c, int el) {
+   public Cell getEl(int r, int c, int el) {
      return getBoard()[r][c][el];
    }//end getEl
 
-   public int[] getRow(int r) {
-     int[] retRow = new int[getRank() * getRank()];
+   public Cell[] getRow(int r) {
+     Cell[] retRow = new Cell[getRank() * getRank()];
      int count = 0;
      for (int c = 0; c < getRank(); c++) {
        int minEl = (r % getRank()) * getRank();
@@ -61,16 +68,16 @@ import jutils.*;
      return retRow;
    }//end getRow
 
-   public int[] getCol(int c) {
-     int[] retCol = new int[getRank() * getRank()];
+   public Cell[] getCol(int c) {
+     Cell[] retCol = new Cell[getRank() * getRank()];
      for (int r = 0; r < getRank() * getRank(); r++) {
         retCol[r] = getRow(r)[c];
      }
      return retCol;
    }//end getCol
 
-   public int[] getSquare(int n) {
-     int[] retSquare = new int[getRank() * getRank()];
+   public Cell[] getSquare(int n) {
+     Cell[] retSquare = new Cell[getRank() * getRank()];
      for (int e = 0; e < retSquare.length; e++) {
        retSquare[e] = getBoard()[n/getRank()][n%getRank()][e];
      }
@@ -81,7 +88,7 @@ import jutils.*;
      for (int r = 0; r < getBoard().length; r++) {
        for (int c = 0; c < getBoard()[r].length; c++) {
          for (int e = 0; e < getBoard()[r][c].length; e++) {
-           if (getEl(r, c, e) == 0) {
+           if (getEl(r, c, e).equals(0)) {
              return false;
            }
          }
@@ -102,20 +109,20 @@ import jutils.*;
      return true;
    }//end isCorrect
 
-   public int set(int r, int c, int e, int newVal) {
-     int oldVal = getBoard()[r][c][e];
+   public int set(int r, int c, int e, Cell newVal) {
+     int oldVal = getBoard()[r][c][e].getState();
      getBoard()[r][c][e] = newVal;
      return oldVal;
    }//end set
 
-   public int sum(int[] nums) {
+   public int sum(Cell[] nums) {
      int ret = 0;
-     for (int i : nums) { ret += i; }
+     for (Cell i : nums) { ret += i.getState(); }
      return ret;
    }
 
    public String toString() {
-     int[] tempRow;
+     Cell[] tempRow;
      int rowCounter = 0;
      String ret = "";
      for (int i = 0; i < 2 * (getRank() * getRank() + (getRank() + 1)) - 1; i++) {
@@ -126,8 +133,8 @@ import jutils.*;
        tempRow = getRow(row);
        ret += "| ";
        for (int i = 0; i < tempRow.length; i++) {
-         if (tempRow[i] != 0) {
-           ret += tempRow[i] + " ";
+         if (tempRow[i].getState() != 0) {
+           ret += tempRow[i].getState() + " ";
          }
          else {
            ret += "  ";
@@ -159,31 +166,31 @@ import jutils.*;
 
      System.out.println("====================\nRows\n====================");
 
-     int[] row0 = b.getRow(0);
+     Cell[] row0 = b.getRow(0);
      System.out.print("Row 0: ");
-     for (int i : row0) {
-       System.out.print(i + " ");
+     for (Cell i : row0) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] row1 = b.getRow(1);
+     Cell[] row1 = b.getRow(1);
      System.out.print("Row 1: ");
-     for (int i : row1) {
-       System.out.print(i + " ");
+     for (Cell i : row1) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] row2 = b.getRow(2);
+     Cell[] row2 = b.getRow(2);
      System.out.print("Row 2: ");
-     for (int i : row2) {
-       System.out.print(i + " ");
+     for (Cell i : row2) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] row3 = b.getRow(3);
+     Cell[] row3 = b.getRow(3);
      System.out.print("Row 3: ");
-     for (int i : row3) {
-       System.out.print(i + " ");
+     for (Cell i : row3) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
@@ -191,61 +198,61 @@ import jutils.*;
 
      System.out.println("====================\nCols\n====================");
 
-     int[] col0 = b.getCol(0);
+     Cell[] col0 = b.getCol(0);
      System.out.print("Col 0: ");
-     for (int i : col0) {
-       System.out.print(i + " ");
+     for (Cell i : col0) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] col1 = b.getCol(1);
+     Cell[] col1 = b.getCol(1);
      System.out.print("Col 1: ");
-     for (int i : col1) {
-       System.out.print(i + " ");
+     for (Cell i : col1) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] col2 = b.getCol(2);
+     Cell[] col2 = b.getCol(2);
      System.out.print("Col 2: ");
-     for (int i : col2) {
-       System.out.print(i + " ");
+     for (Cell i : col2) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] col3 = b.getCol(3);
+     Cell[] col3 = b.getCol(3);
      System.out.print("Col 3: ");
-     for (int i : col3) {
-       System.out.print(i + " ");
+     for (Cell i : col3) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
      System.out.println("====================\nSquares\n====================");
 
-     int[] square00 = b.getSquare(0);
+     Cell[] square00 = b.getSquare(0);
      System.out.println("Square 0: ");
-     for (int i : square00) {
-       System.out.print(i + " ");
+     for (Cell i : square00) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] square01 = b.getSquare(1);
+     Cell[] square01 = b.getSquare(1);
      System.out.println("Square 1: ");
-     for (int i : square01) {
-       System.out.print(i + " ");
+     for (Cell i : square01) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] square10 = b.getSquare(2);
+     Cell[] square10 = b.getSquare(2);
      System.out.println("Square 2: ");
-     for (int i : square10) {
-       System.out.print(i + " ");
+     for (Cell i : square10) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
-     int[] square11 = b.getSquare(3);
+     Cell[] square11 = b.getSquare(3);
      System.out.println("Square 3: ");
-     for (int i : square11) {
-       System.out.print(i + " ");
+     for (Cell i : square11) {
+       System.out.print(i.getState() + " ");
      }
      System.out.println("\n");
 
@@ -253,19 +260,19 @@ import jutils.*;
 
      System.out.println(b + "Correct: " + b.isCorrect());
 
-     b.set(0, 0, 1, 2);
-     b.set(0, 0, 2, 3);
-     b.set(0, 0, 3, 4);
-     b.set(0, 1, 0, 4);
-     b.set(0, 1, 1, 3);
-     b.set(0, 1, 3, 1);
-     b.set(1, 0, 0, 4);
-     b.set(1, 0, 2, 2);
-     b.set(1, 0, 3, 1);
-     b.set(1, 1, 0, 1);
-     b.set(1, 1, 1, 2);
-     b.set(1, 1, 2, 3);
-     b.set(1, 1, 3, 4);
+     b.set(0, 0, 1, new Cell(2));
+     b.set(0, 0, 2, new Cell(3));
+     b.set(0, 0, 3, new Cell(4));
+     b.set(0, 1, 0, new Cell(4));
+     b.set(0, 1, 1, new Cell(3));
+     b.set(0, 1, 3, new Cell(1));
+     b.set(1, 0, 0, new Cell(4));
+     b.set(1, 0, 2, new Cell(2));
+     b.set(1, 0, 3, new Cell(1));
+     b.set(1, 1, 0, new Cell(1));
+     b.set(1, 1, 1, new Cell(2));
+     b.set(1, 1, 2, new Cell(3));
+     b.set(1, 1, 3, new Cell(4));
 
      System.out.println("\n" + b + "Correct: " + b.isCorrect());
 
