@@ -33,13 +33,13 @@ import jutils.*;
      for (int row = 0; row < _rank; row++) {
        for (int col = 0; col < _rank; col++) {
          for (int el = 0; el < _rank * _rank; el++) {
-           _board[row][col][el] = new Cell();
+           _board[row][col][el] = new Cell(_rank);
          }
        }
      }
      for (int i = 1; i < data.length; i++) {
        String[] temp = data[i].split(",");
-       _board[Integer.parseInt(temp[0])][Integer.parseInt(temp[1])][Integer.parseInt(temp[2])] = new Cell(Integer.parseInt(temp[3]));
+       _board[Integer.parseInt(temp[0])][Integer.parseInt(temp[1])][Integer.parseInt(temp[2])] = new Cell(Integer.parseInt(temp[3]), _rank);
      }
    }//end constructor
 
@@ -109,10 +109,8 @@ import jutils.*;
      return true;
    }//end isCorrect
 
-   public int set(int r, int c, int e, Cell newVal) {
-     int oldVal = getBoard()[r][c][e].getState();
-     getBoard()[r][c][e] = newVal;
-     return oldVal;
+   public int set(int r, int c, int e, int newVal) {
+     return getBoard()[r][c][e].setState(newVal);
    }//end set
 
    public int sum(Cell[] nums) {
@@ -260,19 +258,19 @@ import jutils.*;
 
      System.out.println(b + "Correct: " + b.isCorrect());
 
-     b.set(0, 0, 1, new Cell(2));
-     b.set(0, 0, 2, new Cell(3));
-     b.set(0, 0, 3, new Cell(4));
-     b.set(0, 1, 0, new Cell(4));
-     b.set(0, 1, 1, new Cell(3));
-     b.set(0, 1, 3, new Cell(1));
-     b.set(1, 0, 0, new Cell(4));
-     b.set(1, 0, 2, new Cell(2));
-     b.set(1, 0, 3, new Cell(1));
-     b.set(1, 1, 0, new Cell(1));
-     b.set(1, 1, 1, new Cell(2));
-     b.set(1, 1, 2, new Cell(3));
-     b.set(1, 1, 3, new Cell(4));
+     b.set(0, 0, 1, 2);
+     b.set(0, 0, 2, 3);
+     b.set(0, 0, 3, 4);
+     b.set(0, 1, 0, 4);
+     b.set(0, 1, 1, 3);
+     b.set(0, 1, 3, 1);
+     b.set(1, 0, 0, 4);
+     b.set(1, 0, 2, 2);
+     b.set(1, 0, 3, 1);
+     b.set(1, 1, 0, 1);
+     b.set(1, 1, 1, 2);
+     b.set(1, 1, 2, 3);
+     b.set(1, 1, 3, 4);
 
      System.out.println("\n" + b + "Correct: " + b.isCorrect());
 
