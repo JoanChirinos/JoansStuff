@@ -1,38 +1,45 @@
 globals [
-  basepatchcolor
+  basecolor
   goalcolor
   startcolor
   wallcolor
   done
+  pf2found
+  donedone
 ]
 
 patches-own [
  correct
  dist
+
+ pf2done
 ]
 
 to setup
   ca
-  set basepatchcolor white
+  set basecolor white
   set goalcolor red
   set startcolor green
   set wallcolor black
+  set pf2found false
   ask patches [
-    set pcolor basepatchcolor
+    set pcolor basecolor
     set correct false
     set plabel-color black
     set dist 1000000
+    set pf2done false
   ]
   ask patches with [abs(pxcor) > 14 or abs(pycor) > 14] [
     set pcolor wallcolor
   ]
   set done false
+  set donedone false
 end
 
 to chooseGoal
   if mouse-down? [
     ask patches with [pcolor = goalcolor] [
-      set pcolor basepatchcolor
+      set pcolor basecolor
     ]
     ask patch mouse-xcor mouse-ycor [
       set pcolor goalcolor
@@ -54,7 +61,7 @@ to eraseWalls
     if mouse-down? [
       ask patch mouse-xcor mouse-ycor [
         if pcolor != goalcolor and pcolor != startcolor [
-          set pcolor basepatchcolor
+          set pcolor basecolor
         ]
       ]
     ]
@@ -63,7 +70,7 @@ end
 to chooseStart
   if mouse-down? [
     ask patches with [pcolor = startcolor] [
-      set pcolor basepatchcolor
+      set pcolor basecolor
     ]
     ask patch mouse-xcor mouse-ycor [
       if pcolor != goalcolor [
@@ -73,7 +80,7 @@ to chooseStart
   ]
 end
 
-to pathFind
+to pathFind1
   if count patches with [pcolor = startcolor or pcolor = goalcolor] != 2 [
     print "You need to set ONE start point and ONE end point first"
   ]
@@ -91,6 +98,7 @@ to recurse[x y distFrom]
   ]
   ask patch x y [
     set dist distFrom
+    set plabel dist
     ifelse pcolor = goalcolor [
       set correct true
       set done true
@@ -121,25 +129,90 @@ end
 
 to backtrack
   if dist = 0 [
+    print "found!"
     set pcolor green
     stop
   ]
   let lowest 1000000
-  ask neighbors4 [
+  ask neighbors4 with [pcolor = yellow or pcolor = green] [
     if dist < lowest [
       set lowest dist
     ]
   ]
   ask neighbors4 with [dist = lowest] [
-   set pcolor blue
-   backtrack
+    set pcolor blue
+    backtrack
+  ]
+end
+
+to clearPath
+  ask patches with [pcolor = yellow or pcolor = blue] [
+    set pcolor basecolor
+  ]
+  ask patches [
+    set dist 1000000
+    set plabel ""
+    set pf2done false
+    set done false
+  ]
+  set pf2found false
+  set donedone false
+end
+
+to pathFind2
+  if count patches with [pcolor = startcolor or pcolor = goalcolor] != 2 [
+    print "You need to set ONE start point and ONE end point first"
+  ]
+  ask patches with [pcolor = green] [
+    set dist 0
+    set plabel dist
+    set pf2done true
+    ask neighbors4 with [pcolor != wallcolor] [
+      set pcolor yellow
+      set dist 1
+      set plabel dist
+    ]
+  ]
+  let distThing 2
+  while [pf2found = false] [
+    pf2action(distThing)
+    set distThing distThing + 1
+  ]
+  ask patches with [pcolor = goalcolor] [
+    pf2backtrack
   ]
 end
 
 
+to pf2Action[distFrom]
+  ask patches with [pcolor = yellow and pf2done = false] [
+    ask neighbors4 with [pcolor != yellow and pcolor != wallcolor and dist != 0] [
+      set dist distFrom
+      set plabel dist
+      if pcolor = goalcolor [
+        set pf2found true
+        stop
+      ]
+      set pcolor yellow
+    ]
+    set pf2done true
+  ]
+end
 
 
-
+to pf2backtrack
+  if donedone != true [
+    let myDist dist
+    ask neighbors4 with [dist = myDist - 1] [
+      if dist = 0 [
+        set donedone true
+        stop
+      ]
+      set pcolor blue
+      pf2backtrack
+    ]
+  ]
+end
 
 
 
@@ -158,13 +231,13 @@ end
 GRAPHICS-WINDOW
 210
 10
-649
-470
+848
+669
 16
 16
-13.0
+19.03030303030303
 1
-10
+6
 1
 1
 1
@@ -228,7 +301,7 @@ T
 T
 OBSERVER
 NIL
-NIL
+D
 NIL
 NIL
 1
@@ -245,7 +318,7 @@ T
 T
 OBSERVER
 NIL
-NIL
+E
 NIL
 NIL
 1
@@ -270,10 +343,10 @@ NIL
 BUTTON
 40
 298
-126
+134
 331
 NIL
-pathFind
+pathFind1
 NIL
 1
 T
@@ -289,8 +362,25 @@ BUTTON
 253
 125
 286
+NIL
 clearPath
-ask patches with [pcolor = yellow or pcolor = blue] [ set pcolor white ]\nset done false
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+37
+353
+131
+386
+NIL
+pathFind2
 NIL
 1
 T
