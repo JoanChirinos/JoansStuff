@@ -8,6 +8,12 @@ WARNING: a lot of code here may not have comments whoops
 A Java program for editing csv files. Warns user if file seems
 too large to print. Simply compile and run to use. Utilizes jutils.CSVRW
 
+## GraphDriver and Grapher
+Grapher can graph equations with x using +, -, *, /, and a^(b). Grapher has to be
+initialized and the graph is stored as an ArrayList<ArrayList<String>>. GraphDriver
+is a driver class for Grapher and has a UI where the user can graph functions in terms
+of x and display them
+
 ## ScrabbleCheats/ScrabbleSolver.py
 A Python program that uses the official Scrabble dictionary (as of 2016) to
 suggest words. Returns all possible word combinations, sorted by most points

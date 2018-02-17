@@ -225,8 +225,11 @@ public class Blackjack {
 	while (true) {
 	    System.out.print("\n\nPlay again? (y/n): ");
 	    String choice = Keyboard.readString();
-	    if ( !(choice.equals("y")) && !(choice.equals("Y")) ) break;
-	    else System.out.println("\n\n");
+	    if ( !(choice.equals("y")) && !(choice.equals("Y")) ) {
+		System.out.println("\033[H\033[2J");
+		break;
+	    }
+	    else System.out.println("\033[H\033[2J");
 	    game = new Blackjack(game.playerCash, game.computerCash);
 	    if (game.playGame()) break;
 	}
