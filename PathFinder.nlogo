@@ -6,28 +6,41 @@ globals [
   done
   pf2found
   donedone
+  superdone
+  donewith3
 ]
 
 patches-own [
- correct
- dist
+  correct
+  dist
 
- pf2done
+  pf2done
+
+  parent
+  recursedone
+
+  next
+  path
 ]
 
 to setup
   ca
+  set superdone false
   set basecolor white
   set goalcolor red
   set startcolor green
   set wallcolor black
   set pf2found false
+  set donewith3 false
   ask patches [
     set pcolor basecolor
+    set path false
     set correct false
     set plabel-color black
     set dist 1000000
     set pf2done false
+    set parent "none"
+    set next false
   ]
   ask patches with [abs(pxcor) > 14 or abs(pycor) > 14] [
     set pcolor wallcolor
@@ -42,7 +55,9 @@ to chooseGoal
       set pcolor basecolor
     ]
     ask patch mouse-xcor mouse-ycor [
-      set pcolor goalcolor
+      if pcolor != wallcolor and pcolor != startcolor [
+        set pcolor goalcolor
+      ]
     ]
   ]
 end
@@ -58,13 +73,13 @@ to drawWalls
 end
 
 to eraseWalls
-    if mouse-down? [
-      ask patch mouse-xcor mouse-ycor [
-        if pcolor != goalcolor and pcolor != startcolor [
-          set pcolor basecolor
-        ]
+  if mouse-down? [
+    ask patch mouse-xcor mouse-ycor [
+      if pcolor != goalcolor and pcolor != startcolor [
+        set pcolor basecolor
       ]
     ]
+  ]
 end
 
 to chooseStart
@@ -73,7 +88,7 @@ to chooseStart
       set pcolor basecolor
     ]
     ask patch mouse-xcor mouse-ycor [
-      if pcolor != goalcolor [
+      if pcolor != goalcolor and pcolor != wallcolor [
         set pcolor startcolor
       ]
     ]
@@ -154,9 +169,16 @@ to clearPath
     set plabel ""
     set pf2done false
     set done false
+    set parent "none"
+    set next false
   ]
   set pf2found false
   set donedone false
+  set superdone false
+  set donewith3 false
+  ask patches [
+    set recursedone false
+  ]
 end
 
 to pathFind2
@@ -167,6 +189,7 @@ to pathFind2
     set dist 0
     set plabel dist
     set pf2done true
+    set parent "none"
     ask neighbors4 with [pcolor != wallcolor] [
       set pcolor yellow
       set dist 1
@@ -186,7 +209,10 @@ end
 
 to pf2Action[distFrom]
   ask patches with [pcolor = yellow and pf2done = false] [
+    let myx pxcor
+    let myy pycor
     ask neighbors4 with [pcolor != yellow and pcolor != wallcolor and dist != 0] [
+      set parent patch myx myy
       set dist distFrom
       set plabel dist
       if pcolor = goalcolor [
@@ -214,28 +240,185 @@ to pf2backtrack
   ]
 end
 
+to pathFind3
+  if count patches with [pcolor = startcolor or pcolor = goalcolor] != 2 [
+    print "You need to set ONE start point and ONE end point first"
+  ]
+  ask patches with [pcolor = startcolor] [
+    set next true
+  ]
+  while [donewith3 = false] [
+    ask patches with [next = true] [
+      makechildren(pxcor)(pycor)
+    ]
+  ]
+  ask patches with [next = true] [
+    set next false
+  ]
+  ask patches with [pcolor = goalcolor] [
+    set next true
+  ]
+  set donewith3 false
+  while [donewith3 = false] [
+    ask patches with [next = true] [
+      colorpath
+    ]
+  ]
+end
+
+to makechildren [x y]
+  ask neighbors4 [
+    if pcolor = goalcolor [
+      set parent patch x y
+      set donewith3 true
+      stop
+    ]
+    if parent = "none" and pcolor = basecolor [
+      set pcolor yellow
+      set parent patch x y
+      set next true
+    ]
+  ]
+  set next false
+end
+
+to colorpath
+  ask parent [
+    ifelse pcolor = startcolor [
+      set donewith3 true
+      stop
+    ]
+    [
+      set pcolor blue
+      set next true
+    ]
+  ]
+  set next false
+end
+
+to setupmaze
+  ca
+  import-pcolors "maze.jpg"
+  set superdone false
+  set basecolor white
+  set goalcolor red
+  set startcolor green
+  set wallcolor black
+  set pf2found false
+  set donewith3 false
+  ask patches [
+    set correct false
+    set plabel-color black
+    set dist 1000000
+    set pf2done false
+    set parent "none"
+    set next false
+  ]
+  set done false
+  set donedone false
+end
+
+; make patches own parent and recurse through parents to set color blue
 
 
+to fakesnake
+  ask one-of patches with [pcolor = basecolor] [
+    set pcolor startcolor
+  ]
 
+  repeat 50 [
 
+    ask one-of patches with [pcolor = basecolor] [
+      set pcolor goalcolor
+    ]
 
+    ask patches with [pcolor = startcolor] [
+      set next true
+    ]
+    while [donewith3 = false] [
+      ask patches with [next = true] [
+        makechildren(pxcor)(pycor)
+      ]
+    ]
+    ask patches with [next = true] [
+      set next false
+    ]
+    ask patches with [pcolor = goalcolor] [
+      set next true
+    ]
+    set donewith3 false
+    while [donewith3 = false] [
+      ask patches with [next = true] [
+        colorpath
+      ]
+    ]
+    ask patches with [pcolor = yellow] [
+      set pcolor basecolor
+    ]
+    ask patches with [pcolor = blue] [
+      set path true
+    ]
+    clearpath
+    while [count patches with [pcolor = goalcolor] != 0] [
+      snakeback
+      wait 0.08
+    ]
+    clearsnakepath
+  ]
+end
 
+;to pathFind3
+;  if count patches with [pcolor = startcolor or pcolor = goalcolor] != 2 [
+;    print "You need to set ONE start point and ONE end point first"
+;  ]
+;  ask patches with [pcolor = startcolor] [
+;    set next true
+;  ]
+;  while [donewith3 = false] [
+;    ask patches with [next = true] [
+;      makechildren(pxcor)(pycor)
+;    ]
+;  ]
+;  ask patches with [next = true] [
+;    set next false
+;  ]
+;  ask patches with [pcolor = goalcolor] [
+;    set next true
+;  ]
+;  set donewith3 false
+;  while [donewith3 = false] [
+;    ask patches with [next = true] [
+;      colorpath
+;    ]
+;  ]
+;end
 
+to snakeback
+  ask patches with [pcolor = startcolor] [
+    ask neighbors4 with [path = true or pcolor = goalcolor] [
+      set pcolor startcolor
+    ]
+    set pcolor basecolor
+    set path false
+  ]
+end
 
-
-
-
+to clearsnakepath
+  ask patches with [path = true] [
+    set path false
+  ]
+end
 
 
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
+474
 10
-848
-669
+1082
+639
 16
 16
-19.03030303030303
+18.152
 1
 6
 1
@@ -256,10 +439,10 @@ ticks
 30.0
 
 BUTTON
-34
-38
-100
-71
+40
+112
+106
+145
 NIL
 setup
 NIL
@@ -273,10 +456,10 @@ NIL
 1
 
 BUTTON
-35
-100
-139
-133
+20
+190
+124
+223
 NIL
 chooseGoal
 T
@@ -290,10 +473,10 @@ NIL
 1
 
 BUTTON
-34
-173
-127
-206
+24
+264
+117
+297
 NIL
 drawWalls
 T
@@ -307,10 +490,10 @@ NIL
 1
 
 BUTTON
-33
-212
-129
-245
+22
+303
+118
+336
 NIL
 eraseWalls
 T
@@ -324,10 +507,10 @@ NIL
 1
 
 BUTTON
-34
-136
-139
-169
+19
+226
+124
+259
 NIL
 chooseStart
 T
@@ -341,10 +524,10 @@ NIL
 1
 
 BUTTON
-40
-298
-134
-331
+192
+158
+286
+191
 NIL
 pathFind1
 NIL
@@ -358,10 +541,10 @@ NIL
 1
 
 BUTTON
-37
-253
-125
-286
+25
+342
+113
+375
 NIL
 clearPath
 NIL
@@ -375,10 +558,10 @@ NIL
 1
 
 BUTTON
-37
-353
-131
-386
+192
+265
+286
+298
 NIL
 pathFind2
 NIL
@@ -391,42 +574,211 @@ NIL
 NIL
 1
 
+BUTTON
+192
+353
+284
+386
+NIL
+pathfind3
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+25
+153
+123
+186
+NIL
+setupmaze
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+304
+149
+454
+219
+Does not work with maze. Also can usually find a solution pretty quuickly, but it is usually not the best solution
+11
+0.0
+1
+
+BUTTON
+22
+380
+115
+413
+NIL
+fakesnake
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+302
+241
+452
+325
+Uses a kind of distance-based rating system, so not very good and causes error that humans can ignore but that get machines angery
+11
+0.0
+1
+
+TEXTBOX
+299
+347
+449
+417
+Finds (one of the) best solution(s) (I think), but can attempt a lot more spaces than pathFind1 thus making it slower sometimes
+11
+0.0
+1
+
+TEXTBOX
+24
+470
+454
+596
+Some notes:\n1. For the maze, you need the maze image file and set the world size to 51x51\n2. See notes above buttons for speed-setting info\n3. Fake snake is fake snake\n4. See info for how the thingamabobs work, or try to figure out how the convoluted, uncommented, messy code works in the code tab\n\n5!! pf3 is the one you should be focusing on. The other 2 were kind of a build up to pf3. I also believe pf3 code is a little cleaner, so have fun with that
+11
+0.0
+1
+
+TEXTBOX
+31
+90
+181
+108
+Use regular speed
+11
+0.0
+1
+
+TEXTBOX
+208
+93
+438
+135
+Use a slower speed (1/3 of the way to regular works for me
+11
+0.0
+1
+
+TEXTBOX
+1110
+153
+1260
+171
+no a* Dx
+11
+0.0
+1
+
+TEXTBOX
+16
+10
+460
+58
+FOR MORE INFO GO TO INFO TAB (I shouldn't have to remind you xD)\nalso try fullscreen
+13
+0.0
+1
+
 @#$#@#$#@
+# PathFinder (and friends)
+
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+A program to display 3 pathfinding methods in 2d obstructable space
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+Pathfind1:
+6 steps each patch does:
+	1. If I am the goal, let's backtrack!
+	2. Set my dist to distFrom (basically how many steps away from the start patch
+	3. Else if patch to my right is basecolor, ask them to turn yellow and do the 5 steps
+	4. Else if patch to my top is basecolor, ask them to turn yellow and do the 5 steps
+	5. Else if patch to my left is basecolor, ask them to turn yellow and do the 5 steps
+	6. Else if patch to my bottom is basecolor, ask them to turn yellow and do the 5 steps
+Once the goal patch is found, backtrack by recursion:
+	1. If you are the startcolor, we're all done!
+	2. Else ask the lowest of your 4 neighbors to turn blue and do these steps
+
+Pathfind2:
+Uses breadth-first search typpa method to solve.
+	1. If you are goalcolor-ed, you're done
+	2. Else, ask 4 neighbors to turn yellow and set dist to distFrom
+Once the goal has been found, backtrack by recursion:
+	Ask the goal:
+	1. Ask your 4 neighbors
+		1. If your dist = 0, we're done!
+		2. Otherwise, if your dist = my dist - 1, set pcolor blue and follow steps.
+
+Pathfind3!!!
+	1. If you are goalcolor-ed, recurse back
+	2. Else, tell your 4 neighbors:
+		1. Set pcolor yellow
+		2. You are my children. Follow steps 1-2
+recurse back:
+	start at patch with [pcolor = goalcolor]
+	1. ask parent
+		1. If you're startcolor, we're done
+		2. Else do step 1
+
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+Pretty much explains itself on the interface
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+How do pf1 and pf2 differ? pf1 evaluates 1 neighbor at a time, causing the path to propograte right, then up, then left, then down. pf2 evaluates all 4 neighbors, then does the next step. This causes it to spread in a diamond shape
+
+Why are there blobs with pf2? Well, that's a good question. I'm like 90% sure it has to do with a patch sometimes having 2 neighbors with dists one less than their own. Thus, they turn blue
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+1. Change colors (should work, haven't tried yet)
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+1. Try an A* thing. Gl
+2. Make the fakesnake a realsnake
+3. Make the colors go away on fakesnake pls
 
 ## NETLOGO FEATURES
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+Did you know you can store a patch in a variable???
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+idk
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+Joan Chirinos, 2018. Some contribution and guidance by Peter Brooks
 @#$#@#$#@
 default
 true
