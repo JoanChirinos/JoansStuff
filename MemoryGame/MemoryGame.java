@@ -1,7 +1,7 @@
 /*
-__                     ________    _      _
-/ /___  ____ _____     / ____/ /_  (_)____(_)___  ____  _____
-__  / / __ \/ __ `/ __ \   / /   / __ \/ / ___/ / __ \/ __ \/ ___/
+       __                     ________    _      _
+      / /___  ____ _____     / ____/ /_  (_)____(_)___  ____  _____
+ __  / / __ \/ __ `/ __ \   / /   / __ \/ / ___/ / __ \/ __ \/ ___/
 / /_/ / /_/ / /_/ / / / /  / /___/ / / / / /  / / / / / /_/ (__  )
 \____/\____/\__,_/_/ /_/   \____/_/ /_/_/_/  /_/_/ /_/\____/____/
 
@@ -157,7 +157,7 @@ public class MemoryGame {
         _guessesNeeded--;
         _board[r1][c1]._canBeFlipped = false;
         _board[r2][c2]._canBeFlipped = false;
-        System.out.println("\n\tCongrats!")
+        System.out.println("\n\tCongrats!");
       }
       else {
         System.out.println("Aw man, that's wrong!");
