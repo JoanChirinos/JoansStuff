@@ -14,6 +14,7 @@ A memory game with the cards and flipping and whatnot
 
 import jutils.*;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 public class MemoryGame {
 
@@ -21,8 +22,12 @@ public class MemoryGame {
   //default board size: 10
   private int _boardSize = 6;
   private int _guessesNeeded;
+  private String _username;
+  public int _guesses;
 
+  /*
   public MemoryGame() {
+    _guesses = 0;
     _guessesNeeded = _boardSize * _boardSize / 2;
     _board = new Card[_boardSize][_boardSize];
     String[] possibleVals = new String[_boardSize / 2];
@@ -38,8 +43,11 @@ public class MemoryGame {
       }
     }
   }//end default constructor
+  */
 
-  public MemoryGame(int size) {
+  public MemoryGame(int size, String newName) {
+    _username = newName;
+    _guesses = 0;
     if (size % 2 != 0) {
       size++;
       System.out.println("\033[H\033[2JInvalid board size. Using size " + size);
@@ -97,6 +105,8 @@ public class MemoryGame {
       }
       ret += "\n\n";
     }
+    ret += "\tGuesses so far: " + this._guesses;
+
     return ret;
   }//end toString
 
@@ -112,7 +122,54 @@ public class MemoryGame {
 
   }//end sleep
 
+  public void writeHighScores(String whereTo) {
+    FileRW.write("100,Dave\n101,David\n102,Davido\n103,Davidson\n104,Daviddotter", whereTo);
+  }//end writeHighScores(String)
+
+  public void writeHighScores() {
+    ArrayList<String[]> hs = new ArrayList<String[]>();
+    String[] hslist = FileRW.read("hs/" + _boardSize).split("\n");
+    for (String s : hslist) {
+      String[] listo = s.split(",");
+      hs.add(listo);
+    }
+    for (int i = 0; i < hs.size(); i++) {
+      if (_guesses < Integer.parseInt(hs.get(i)[0])) {
+        String[] temp = {_guesses + "", _username};
+        hs.add(i, temp);
+        break;
+      }
+    }
+    String toWrite = "";
+    for (String[] s : hs) {
+      toWrite += String.join(",", s) + "\n";
+    }
+    FileRW.write(toWrite, "hs/" + _boardSize);
+  }//end writeHighScores(String, String)
+
+  public String getHighScores() {
+    String ret = "High scores for a " + _boardSize + "x" + _boardSize + "board:\n";
+    try {
+      String[] scores = FileRW.read("hs/" + _boardSize).split("\n");
+      for (int i = 0; i < 5; i++) {
+        String[] hs = scores[i].split(",");
+        ret += "\n\t" + (i + 1) + ". " + String.format("%10.10s", hs[1]) + ": " + String.format("%3.3s", hs[0]);
+      }
+      return ret;
+    }
+    catch (IllegalArgumentException e) {
+      writeHighScores("hs/" + _boardSize);
+      return getHighScores();
+    }
+    catch (Exception e) {
+      throw new IllegalArgumentException("\n\n\tSomething went wrong when reading your high scores");
+    }
+  }
+
   public void go() {
+    System.out.println("\033[H\033[2J" + getHighScores());
+    sleep(5);
+    System.out.print("\033[H\033[2J");
     this.shuffle();
     System.out.println(this + "\n\nYou have about 15 seconds to memorize the board");
     for (int r = 0; r < _boardSize; r++) {
@@ -139,7 +196,7 @@ public class MemoryGame {
         continue;
       }
 
-      System.out.print("Card2\n\tRow: ");
+      System.out.print("\nCard2\n\tRow: ");
       int r2 = Keyboard.readInt();
       System.out.print("\tColumn: ");
       int c2 = Keyboard.readInt();
@@ -157,24 +214,38 @@ public class MemoryGame {
         _guessesNeeded--;
         _board[r1][c1]._canBeFlipped = false;
         _board[r2][c2]._canBeFlipped = false;
-        System.out.println("\n\tCongrats!");
+        System.out.println("\n\n\tCongrats!");
+        sleep(2);
       }
       else {
-        System.out.println("Aw man, that's wrong!");
+        System.out.println("\n\n\tAw man, that's wrong!");
         _board[r1][c1].flipCard();
         _board[r2][c2].flipCard();
         sleep(3);
       }
+      this._guesses += 1;
     }
-    System.out.println("\n\n\tSUCCESS!!!");
-    sleep(1);
+    writeHighScores();
+    int guessesAway = (this._guesses - (_boardSize * _boardSize / 2));
+    if (guessesAway == 0) {
+      System.out.println("\033[H\033[2J\nSUCCESS!!!\n\nYou played a perfect game!");
+    }
+    else if (guessesAway == 1) {
+      System.out.println("\033[H\033[2J\n\t\tSUCCESS!!!\n\nYou were " + guessesAway + " guess away from a perfect game. Keep it up!");
+    }
+    else System.out.println("\033[H\033[2J\n\t\tSUCCESS!!!\n\nYou were " + guessesAway + " guesses away from a perfect game. Keep it up!");
+
+    System.out.println("\n" + getHighScores());
+    sleep(3);
   }//end go
 
   public static void main(String[] args) {
+    System.out.print("\033[H\033[2JName: ");
+    String name = Keyboard.readString();
     System.out.print("\033[H\033[2JBoard size: ");
     int bsize = Keyboard.readInt();
     System.out.print("\033[H\033[2J");
-    MemoryGame g = new MemoryGame(bsize);
+    MemoryGame g = new MemoryGame(bsize, name);
     g.go();
   }
 
