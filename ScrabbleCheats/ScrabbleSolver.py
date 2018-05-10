@@ -3,16 +3,17 @@
 # $ python ScrabbleSolver.py <dictionary csv> <word starts with> <rack>
 # $ python ScrabbleSolver.py <dictionary csv> <rack> <word ends with>
 
-# Note that a blank tile can be represented by a "!"
+# Note that a blank tile can be represented by a "0"
 
 
 import sys
-from time import sleep
 
 def rackdict(rack):
     rackd = {}
+    zerocount = 0
     for i in rack:
-        if i in rackd: rackd[i] += 1
+        if i == '0': zerocount += 1
+        elif i in rackd: rackd[i] += 1
         else: rackd[i] = 1
     return rackd
 
@@ -21,7 +22,7 @@ def readlines(rack, filename='sowpods.txt'):
     validwords = []
     with open(filename, 'rU', 100) as infile:
         for word in infile:
-            # if len(word) > 7: continue
+            if len(word) > 7: continue
             for i in rackd:
                 if i not in word: continue
             for letter in rackd:
@@ -59,12 +60,12 @@ def cheat(filename):
         rack = sys.argv[2]
         print 'rack: ' + str(rack)
     for i in range(len(rack)):
-        if rack[i] == '!':
+        if rack[i] == '0':
             print 'has blank'
             break
     rack = rack.lower()
     words = filereader(filename)
-    scored = ((toscore(word), word) for word in words if set(word).issubset(set(rack)) and len(word)>1 and spellable(word, rack))
+    scored = ((toscore(word), word) for word in words if (set(word).issubset(set(rack))) and len(word)>1 and spellable(word, rack))
     for score, word in sorted(scored)[::]:
         if begins and not ends:
             if word[0] == beg:
@@ -74,5 +75,6 @@ def cheat(filename):
                 print str(score), '\t', word
         elif not ends and not begins:
             print str(score), '\t', word
-            
+
+
 print cheat(sys.argv[1])
