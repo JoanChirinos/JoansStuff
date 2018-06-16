@@ -409,13 +409,12 @@ to clearsnakepath
   ]
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 474
 10
-1082
-639
+1083
+640
 16
 16
 18.152

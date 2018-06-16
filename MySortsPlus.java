@@ -62,12 +62,12 @@ public class MySortsPlus {
   // postcondition: data's elements sorted in ascending order
   // Best case time: O(n)
   // Worst case time: O(n^2)
-  public static void bubbleSort( ArrayList<Comparable> data )
+  public static void bubbleSort( ArrayList<Comparable> data, boolean print )
   {
 
     boolean sorted = false;
 
-    System.out.println("\n***BubbleSort***\n" +
+    if (print) System.out.println("\n***BubbleSort***\n" +
     "Initial: " + data + "\n");
 
     //make n-1 passes across collection
@@ -79,16 +79,16 @@ public class MySortsPlus {
       for( int i = 0; i < data.size()-1; i++ ) {
         //if element at i > element at i+1, swap
         if ( data.get(i).compareTo(data.get(i+1) ) > 0 ) {
-          data.set( i, data.set(i+1,data.get(i)) );
+          swap(data, i, i + 1);
           sorted = false;
         }
       }
-      System.out.println(data);
+      if (print) System.out.println(data);
 
       if (sorted) break;
     }
 
-    System.out.println("\nSorted: " + data);
+    if (print) System.out.println("\nSorted: " + data);
 
   }//end bubbleSort
 
@@ -102,14 +102,14 @@ public class MySortsPlus {
   // postcondition: data's elements sorted in ascending order
   // Best case time: O(n^2)
   // Worst case time: O(n^2)
-  public static void selectionSort( ArrayList<Comparable> data )
+  public static void selectionSort( ArrayList<Comparable> data, boolean print)
   {
     //note: this version places greatest value at rightmost end,
 
     //maxPos will point to position of SELECTION (greatest value)
     int maxPos;
 
-    System.out.println("\n***SelectionSort***\n" +
+    if (print) System.out.println("\n***SelectionSort***\n" +
     "Initial: " + data + "\n");
 
     for( int pass = data.size()-1; pass > 0; pass-- ) {
@@ -118,11 +118,11 @@ public class MySortsPlus {
         if ( data.get(i).compareTo( data.get(maxPos) ) > 0 )
         maxPos = i;
       }
-      data.set( maxPos, ( data.set( pass, data.get(maxPos) ) ) );
-      System.out.println(data);
+      swap(data, maxPos, pass);
+      if (print) System.out.println(data);
     }
 
-    System.out.println("\nSorted: " + data);
+    if (print) System.out.println("\nSorted: " + data);
 
   }//end selectionSort
 
@@ -142,10 +142,10 @@ public class MySortsPlus {
   // postcondition: data's elements sorted in ascending order
   // Best case time: O(n)
   // Worst case time: O(n^2)
-  public static void insertionSort( ArrayList<Comparable> data )
+  public static void insertionSort( ArrayList<Comparable> data, boolean print)
   {
 
-    System.out.println("\n***InsertionSort***\n" +
+    if (print) System.out.println("\n***InsertionSort***\n" +
     "Initial: " + data + "\n");
 
     for( int partition = 1; partition < data.size(); partition++ ) {
@@ -157,21 +157,21 @@ public class MySortsPlus {
         // "walk" the current item to where it belongs
         // by swapping adjacent items
         if ( data.get(i).compareTo( data.get(i-1) ) < 0 ) {
-          data.set( i, data.set( i-1, data.get(i) ) );
+          swap(data, i, i - 1);
         }
         else
         break;
       }
-      System.out.println(data);
+      if (print) System.out.println(data);
     }
 
-    System.out.println("\nSorted: " + data);
+    if (print) System.out.println("\nSorted: " + data);
 
   }//end insertionSort
 
-  public static void cocktailSort(ArrayList<Comparable> data) {
+  public static void cocktailSort(ArrayList<Comparable> data, boolean print) {
 
-    System.out.println("\n***CocktailSort***\n" +
+    if (print) System.out.println("\n***CocktailSort***\n" +
     "Initial: " + data + "\n");
 
     int start = 0, end = data.size() - 1;
@@ -188,13 +188,13 @@ public class MySortsPlus {
         //if data[i] > data[i + 1]...
         if (data.get(i).compareTo( data.get(i + 1) ) > 0) {
           //..swap them
-          data.set(i, data.set(i + 1, data.get(i)));
+          swap(data, i, i + 1);
           sorted = false;
         }
       }
       end--;
 
-      System.out.println(data);
+      if (print) System.out.println(data);
 
       if (sorted) break;
 
@@ -203,24 +203,24 @@ public class MySortsPlus {
         //if data[i] < data[i - 1]...
         if (data.get(j).compareTo( data.get(j - 1) ) < 0) {
           //...swap them
-          data.set(j, data.set(j - 1, data.get(j)));
+          swap(data, j, j - 1);
           sorted = false;
         }
       }
       start++;
 
-      System.out.println(data);
+      if (print) System.out.println(data);
 
     }//end while
 
-    System.out.println("\nSorted: " + data);
+    if (print) System.out.println("\nSorted: " + data);
 
   }//end cocktailSort
 
   //pre-cond: elements in data are in the range [0, infinity)
-  public static void countingSort(ArrayList<Integer> data) {
+  public static void countingSort(ArrayList<Integer> data, boolean print) {
 
-    System.out.println("\n***CountingSort***\n" +
+    if (print) System.out.println("\n***CountingSort***\n" +
     "Initial: " + data);
 
     int[] arr = new int[max(data) + 1];
@@ -232,7 +232,7 @@ public class MySortsPlus {
     String arrStr = "[";
     for (int i : arr)
     arrStr += i + ",";
-    System.out.println("Counting array: " +
+    if (print) System.out.println("Counting array: " +
     arrStr.substring(0, arrStr.length() - 1) + "]");
 
     data = new ArrayList<Integer>();
@@ -241,11 +241,11 @@ public class MySortsPlus {
       while (arr[i] > 0) {
         data.add(i);
         arr[i]--;
-        System.out.println(data);
+        if (print) System.out.println(data);
       }
     }
 
-    System.out.println("\nSorted: " + data + "\n");
+    if (print) System.out.println("\nSorted: " + data + "\n");
 
   }//end countingSort
 
@@ -257,7 +257,6 @@ public class MySortsPlus {
     if (data.size() == 1) {
       return data;
     }
-    //NOT DONE
     return sortSorted(mergeSortHelper(getSublist(data, 0, data.size() / 2)), mergeSortHelper(getSublist(data, data.size() / 2, data.size())));
   }//end mergeSortHelper
 
@@ -282,9 +281,9 @@ public class MySortsPlus {
     return ret;
   }
 
-  public static void hopeSort(ArrayList<Comparable> data) {
+  public static void hopeSort(ArrayList<Comparable> data, boolean print) {
 
-    System.out.println("\n***HopeSort***\n" +
+    if (print) System.out.println("\n***HopeSort***\n" +
     "Initial: " + data + "\n");
 
     int attemptCount = 0;
@@ -298,16 +297,108 @@ public class MySortsPlus {
       int i = (int)(Math.random() * data.size());
       int j = (int)(Math.random() * data.size());
 
-      data.set(i, data.set(j, data.get(i)));
+      swap(data, i, j);
 
       attemptCount++;
 
     }
 
-    System.out.println("\nSorted: " + data + "\n" +
+    if (print) System.out.println("\nSorted: " + data + "\n" +
     "How many tries did it take? " +
     attemptCount + "\n");
 
+  }
+
+  private static void quickSortHelper(ArrayList<Comparable> data, int left, int right) {
+    if (left < right) {
+      int pvt = partition(data, left, right);
+      quickSortHelper(data, left, pvt - 1);
+      quickSortHelper(data, pvt + 1, right);
+    }
+  }
+
+  private static int partition(ArrayList<Comparable> data, int left, int right) {
+    int pvtPos = left + (int)(Math.random() * (right - left - 1));
+
+    Comparable pvtVal = data.get(pvtPos);
+    swap(data, pvtPos, right);
+    int storePos = left;
+    for (int i = left; i < right; i++) {
+      if (data.get(i).compareTo(pvtVal) < 0) {
+        swap(data, storePos, i);
+        storePos++;
+      }
+    }
+    swap(data, storePos, right);
+    return storePos;
+  }
+
+  public static void quickSort(ArrayList<Comparable> data, boolean print) {
+    if (print) System.out.println("\n***QuickSort***\nInitial: " + data);
+    quickSortHelper(data, 0, data.size() - 1);
+    if (print) System.out.println("\nSorted: " + data);
+  }
+
+  private static void heapify(ArrayList<Comparable> data, int maxIndex) {
+    int toAdd = 1;
+    while (toAdd < maxIndex) {
+      int cIndex = toAdd;
+      int pIndex = (cIndex - 1) / 2;
+      while (cIndex > 0 && data.get(cIndex).compareTo(data.get(pIndex)) > 0) {
+        swap(data, cIndex, pIndex);
+        cIndex = pIndex;
+        pIndex = (cIndex - 1) / 2;
+      }
+      toAdd++;
+    }
+  }
+
+  public static void heapSort(ArrayList<Comparable> data, boolean print) {
+    if (print) System.out.println("\n***HeapSort***\n" +
+    "Initial: " + data);
+    int heapifyTo = data.size();
+    while (heapifyTo > 1) {
+      heapify(data, heapifyTo);
+      swap(data, 0, heapifyTo - 1);
+      heapifyTo--;
+    }
+    if (print) System.out.println("\nSorted: " + data + "\n");
+  }
+
+  private static void heapify(int[] data, int maxIndex) {
+    int toAdd = 1;
+    while (toAdd < maxIndex) {
+      int cIndex = toAdd;
+      int pIndex = (cIndex - 1) / 2;
+      while (cIndex > 0 && data[cIndex] > data[pIndex]) {
+        swap(data, cIndex, pIndex);
+        cIndex = pIndex;
+        pIndex = (cIndex - 1) / 2;
+      }
+      toAdd++;
+    }
+  }
+
+  public static void heapSort(int[] data, boolean print) {
+    if (print) System.out.println("\n***HeapSort***\n" +
+    "Initial: " + data);
+    int heapifyTo = data.length;
+    while (heapifyTo > 1) {
+      heapify(data, heapifyTo);
+      swap(data, 0, heapifyTo - 1);
+      heapifyTo--;
+    }
+    if (print) System.out.println("\nSorted: " + data + "\n");
+  }
+
+  private static void swap(ArrayList<Comparable> data, int index1, int index2) {
+    data.set(index1, data.set(index2, data.get(index1)));
+  }
+
+  private static void swap(int[] data, int index1, int index2) {
+    int t = data[index1];
+    data[index1] = data[index2];
+    data[index2] = t;
   }
 
 
@@ -315,38 +406,48 @@ public class MySortsPlus {
 
     ArrayList<Comparable> random = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++)
-    random.add( (int)(Math.random() * 100));
+      random.add( (int)(Math.random() * 100));
 
     ArrayList<Comparable> bubble = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++)
-    bubble.add(random.get(i));
+      bubble.add(random.get(i));
 
     ArrayList<Comparable> select = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++)
-    select.add(random.get(i));
+      select.add(random.get(i));
 
     ArrayList<Comparable> insert = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++)
-    insert.add(random.get(i));
+      insert.add(random.get(i));
 
     ArrayList<Comparable> cocktail = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++)
-    cocktail.add(random.get(i));
+      cocktail.add(random.get(i));
 
     ArrayList<Integer> counting = new ArrayList<Integer>();
     for (int i = 0; i < 10; i++)
-    counting.add((Integer)(random.get(i)));
+      counting.add((Integer)(random.get(i)));
 
     ArrayList<Comparable> hope = new ArrayList<Comparable>();
     for (Comparable i : random)
-    hope.add(i);
+      hope.add(i);
 
-    bubbleSort(bubble);
-    selectionSort(select);
-    insertionSort(insert);
-    cocktailSort(cocktail);
-    countingSort(counting);
-    hopeSort(hope);
+    ArrayList<Comparable> heap = new ArrayList<Comparable>();
+    for (int i = 0; i < 10; i++)
+        heap.add(random.get(i));
+
+    ArrayList<Comparable> quick = new ArrayList<Comparable>();
+    for (int i = 0; i < 10; i++)
+        quick.add(random.get(i));
+
+    bubbleSort(bubble, true);
+    selectionSort(select, true);
+    insertionSort(insert, true);
+    cocktailSort(cocktail, true);
+    countingSort(counting, true);
+    hopeSort(hope, true);
+    heapSort(heap, true);
+    quickSort(quick, true);
     //MergeSort stuff
     ArrayList<Comparable> merge = new ArrayList<Comparable>();
     for (int i = 0; i < 10; i++) {
@@ -355,6 +456,99 @@ public class MySortsPlus {
     System.out.println("\n***MergeSort***\nInitial: " + merge);
     merge = mergeSort(merge);
     System.out.println("Sorted: " + merge);
+
+    System.out.println("\nNow with 30,000 values (hopeSort will not be tested)\n");
+
+    random = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      random.add( (int)(Math.random() * 100000));
+
+    bubble = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      bubble.add(random.get(i));
+
+    select = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      select.add(random.get(i));
+
+    insert = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      insert.add(random.get(i));
+
+    cocktail = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      cocktail.add(random.get(i));
+
+    counting = new ArrayList<Integer>();
+    for (int i = 0; i < 30000; i++)
+      counting.add((Integer)(random.get(i)));
+
+    heap = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+        heap.add(random.get(i));
+
+    quick = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+        quick.add(random.get(i));
+
+    merge = new ArrayList<Comparable>();
+    for (int i = 0; i < 30000; i++)
+      merge.add(random.get(i));
+
+    int[] heapArr = new int[30000];
+    for (int i = 0; i < heapArr.length; i++) {
+      heapArr[i] = (Integer) heap.get(i);
+    }
+
+    long start, end;
+
+    start = System.nanoTime();
+    bubbleSort(bubble, false);
+    end = System.nanoTime();
+    System.out.println("BubbleSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    selectionSort(select, false);
+    end = System.nanoTime();
+    System.out.println("SelectionSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    insertionSort(insert, false);
+    end = System.nanoTime();
+    System.out.println("InsertionSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    cocktailSort(cocktail, false);
+    end = System.nanoTime();
+    System.out.println("CocktailShakerSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    countingSort(counting, false);
+    end = System.nanoTime();
+    System.out.println("CountingSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    mergeSort(merge);
+    end = System.nanoTime();
+    System.out.println("MergeSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    quickSort(quick, false);
+    end = System.nanoTime();
+    System.out.println("QuickSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    start = System.nanoTime();
+    heapSort(heap, false);
+    end = System.nanoTime();
+    System.out.println("HeapSort Took " + ((end - start) / 1000000000.) + " seconds");
+
+    System.out.println("\nNow testing HeapSort with an int array rather than an AL");
+    start = System.nanoTime();
+    heapSort(heapArr, false);
+    end = System.nanoTime();
+    System.out.println("HeapSort(Array) Took " + ((end - start) / 1000000000.) + " seconds");
+
+
 
   }
 
