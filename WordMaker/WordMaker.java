@@ -25,7 +25,7 @@ A machine learning program to make words based off of a text
    }
 
    public void learn(String path) {
-     String[] words = FileRW.read(path).trim().replaceAll("[.,!@#$%^&*():;\"?_\\-\\[\\]”\\—/\\“]", " ").split("\\s+");
+     String[] words = FileRW.read(path).trim().replaceAll("[.,!@#$%^&*():;\"?_\\-\\[\\]”\\—/\\“\'‘¦]", "").split("\\s+");
      for (String word : words) {
        _tree.addWord(word);
      }
